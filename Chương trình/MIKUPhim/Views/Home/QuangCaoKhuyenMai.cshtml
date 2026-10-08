@@ -1,0 +1,70 @@
+﻿@model List<MIKUPhim.Models.KHUYENMAI>
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+
+        TIN MỚI VÀ ƯU ĐÃI
+
+    </h2>
+
+    <div class="row">
+
+        @foreach (var km in Model)
+        {
+
+            <div class="col-md-3 mb-4">
+
+                <a href="/Home/ChiTietKhuyenMai/@km.MaKhuyenMai">
+
+                    <img src="/images/@km.HinhAnh"
+                         class="promo-img">
+
+                </a>
+
+                <p class="mt-2 fw-bold">
+
+                    @km.TieuDe
+
+                </p>
+
+                <p class="text-muted">
+
+                    📅 @km.NgayBatDau.ToString("dd/MM/yyyy")
+
+                </p>
+
+            </div>
+
+        }
+
+    </div>
+
+    <div class="text-center mt-3">
+
+        <a href="/Home/KhuyenMai"
+           class="btn btn-danger">
+
+            Xem tất cả khuyến mãi
+
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+
+    .promo-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+        .promo-img:hover {
+            transform: scale(1.05);
+        }
+
+</style>

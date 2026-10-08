@@ -1,0 +1,109 @@
+﻿@model IEnumerable<MIKUPhim.Models.NGUOIDUNG>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách người dùng</h2>
+
+<a href="/Admin/ThemNguoiDung"
+   class="btn btn-success mb-3">
+
+    + Tạo user
+
+</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Avatar</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>SĐT</th>
+            <th>Quyền</th>
+            <th>Ngày tạo</th>
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var u in Model)
+        {
+            <tr>
+
+                <td>
+
+                    @if (u.Avatar != null)
+                    {
+                        <img src="/images/@u.Avatar"
+                             width="40"
+                             style="border-radius:50%">
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            @u.HoTen.Substring(0,1)
+                        </span>
+                    }
+
+                </td>
+
+                <td>@u.HoTen</td>
+
+                <td>@u.Email</td>
+
+                <td>@u.SoDienThoai</td>
+
+                <td>
+
+                    @if (u.VaiTro.ToUpper() == "ADMIN")
+                    {
+                        <span class="badge bg-danger">ADMIN</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-info">USER</span>
+                    }
+
+                </td>
+
+                <td>@u.NgayTao.ToString("dd/MM/yyyy")</td>
+
+                <td>
+
+                    <a href="/Admin/ChiTietNguoiDung/@u.MaNguoiDung"
+                       class="btn btn-info btn-sm">
+
+                        Chi tiết
+
+                    </a>
+
+                    <a href="/Admin/SuaNguoiDung/@u.MaNguoiDung"
+                       class="btn btn-warning btn-sm">
+
+                        Sửa
+
+                    </a>
+
+                    <a href="/Admin/XoaNguoiDung/@u.MaNguoiDung"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa user này?')">
+
+                        Xóa
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

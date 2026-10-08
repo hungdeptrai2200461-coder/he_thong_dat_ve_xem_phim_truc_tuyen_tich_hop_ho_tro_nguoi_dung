@@ -1,0 +1,238 @@
+﻿@model MIKUPhim.Models.SUATCHIEU
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa suất chiếu</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="alert alert-info">
+    <b>Thông tin suất chiếu</b><br />
+    Phim: <b>@Model.PHIM?.TenPhim</b><br />
+    Phòng: <b>@Model.PHONGCHIEU?.TenPhong</b><br />
+    Ngày chiếu: <b>@Model.NgayChieu.ToString("dd/MM/yyyy")</b>
+</div>
+
+<form method="post"
+      onsubmit="return confirm('Bạn có chắc muốn cập nhật suất chiếu này?')">
+
+    <input type="hidden" asp-for="MaSuatChieu" />
+
+    <!-- hidden thời lượng -->
+    <input type="hidden" id="thoiLuong" />
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <!-- PHIM -->
+            <div class="form-group">
+                <label>Phim</label>
+                <select asp-for="MaPhim" class="form-control" id="phimSelect">
+                    @foreach (var p in ViewBag.Phim)
+                    {
+                        <option value="@p.MaPhim">@p.TenPhim</option>
+                    }
+                </select>
+            </div>
+
+            <!-- RẠP -->
+            <div class="form-group mt-3">
+                <label>Rạp</label>
+                <select id="rapSelect" class="form-control">
+                    @foreach (var r in ViewBag.Rap)
+                    {
+                        <option value="@r.MaRap">@r.TenRap</option>
+                    }
+                </select>
+            </div>
+
+            <!-- PHÒNG -->
+            <div class="form-group mt-3">
+                <label>Phòng chiếu</label>
+                <select asp-for="MaPhong" id="phongSelect" class="form-control">
+                    @foreach (var p in ViewBag.Phong)
+                    {
+                        <option value="@p.MaPhong">@p.TenPhong</option>
+                    }
+                </select>
+            </div>
+
+            <!-- NGÀY -->
+            <div class="form-group mt-3">
+                <label>Ngày chiếu</label>
+                <input asp-for="NgayChieu"
+                       type="date"
+                       class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <!-- GIỜ BẮT ĐẦU -->
+            <div class="form-group">
+                <label>Giờ bắt đầu</label>
+                <input asp-for="GioBatDau"
+                       type="time"
+                       class="form-control"
+                       id="gioBatDau"
+                       step="60"
+                       lang="en-GB" />
+            </div>
+
+            <!-- GIỜ KẾT THÚC -->
+            <div class="form-group mt-3">
+                <label>Giờ kết thúc</label>
+                <input asp-for="GioKetThuc"
+                       type="time"
+                       class="form-control"
+                       id="gioKetThuc"
+                       step="60"
+                       lang="en-GB" />
+            </div>
+
+            <!-- GIÁ -->
+            <div class="form-group mt-3">
+                <label>Giá vé</label>
+                <input asp-for="GiaVe"
+                       class="form-control" />
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="mt-4">
+        <b>Xem trước khung giờ:</b>
+        <span id="previewTime"
+              class="badge bg-primary"
+              style="font-size:14px">
+        </span>
+    </div>
+
+    <!-- TRẠNG THÁI -->
+    <div class="mt-3">
+        @{
+            var now = DateTime.Now;
+
+            DateTime batDau = Model.NgayChieu.Date + Model.GioBatDau;
+            DateTime ketThuc = Model.NgayChieu.Date + Model.GioKetThuc;
+
+            string trangThai = "Sắp chiếu";
+            string color = "warning";
+
+            if (now >= batDau && now <= ketThuc)
+            {
+                trangThai = "Đang chiếu";
+                color = "success";
+            }
+            else if (now > ketThuc)
+            {
+                trangThai = "Đã chiếu";
+                color = "secondary";
+            }
+        }
+
+        <b>Trạng thái hiện tại:</b>
+        <span class="badge bg-@color">
+            @trangThai
+        </span>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-success">
+        Cập nhật
+    </button>
+
+    <a href="/Admin/QuanLySuatChieu" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+<!-- SCRIPT -->
+<script>
+
+    // PREVIEW
+    function previewTime() {
+        let start = document.getElementById("gioBatDau").value;
+        let end = document.getElementById("gioKetThuc").value;
+
+        if (start && end) {
+            document.getElementById("previewTime").innerHTML =
+                start + " - " + end;
+        }
+    }
+
+    // AUTO LOAD THỜI LƯỢNG PHIM
+    document.getElementById("phimSelect").addEventListener("change", function () {
+
+        var maPhim = this.value;
+
+        fetch('/Admin/GetThoiLuong?maPhim=' + maPhim)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("thoiLuong").value = data;
+            });
+    });
+
+    // AUTO TÍNH GIỜ KẾT THÚC
+    document.getElementById("gioBatDau").addEventListener("change", function () {
+
+        var gioBatDau = this.value;
+        var thoiLuong = parseInt(document.getElementById("thoiLuong").value);
+
+        if (!gioBatDau || !thoiLuong) return;
+
+        var parts = gioBatDau.split(":");
+        var date = new Date();
+
+        date.setHours(parts[0]);
+        date.setMinutes(parts[1]);
+
+        date.setMinutes(date.getMinutes() + thoiLuong);
+
+        var h = String(date.getHours()).padStart(2, '0');
+        var m = String(date.getMinutes()).padStart(2, '0');
+
+        document.getElementById("gioKetThuc").value = h + ":" + m;
+
+        previewTime();
+    });
+
+    // LOAD PHÒNG THEO RẠP
+    document.getElementById("rapSelect").addEventListener("change", function () {
+
+        var maRap = this.value;
+
+        fetch('/Admin/GetPhongByRap?maRap=' + maRap)
+            .then(res => res.json())
+            .then(data => {
+
+                var phong = document.getElementById("phongSelect");
+                phong.innerHTML = "";
+
+                data.forEach(p => {
+                    phong.innerHTML += `<option value="${p.maPhong}">${p.tenPhong}</option>`;
+                });
+
+            });
+
+    });
+
+    document.getElementById("gioBatDau").addEventListener("change", previewTime);
+    document.getElementById("gioKetThuc").addEventListener("change", previewTime);
+
+    previewTime();
+
+</script>

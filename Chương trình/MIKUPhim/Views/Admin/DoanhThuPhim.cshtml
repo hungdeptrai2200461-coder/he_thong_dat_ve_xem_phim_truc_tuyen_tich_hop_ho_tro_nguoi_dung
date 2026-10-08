@@ -1,0 +1,119 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Doanh thu theo phim</h2>
+
+<!-- Bộ lọc ngày -->
+<form method="get">
+
+    <input type="date" name="tuNgay" value="@ViewBag.TuNgay" />
+
+    <input type="date" name="denNgay" value="@ViewBag.DenNgay" />
+
+    <button type="submit" class="btn btn-primary">
+        Lọc dữ liệu
+    </button>
+
+</form>
+
+
+<!-- 2 biểu đồ -->
+<div style="display:flex;gap:30px;margin-bottom:40px">
+
+    <div style="flex:1">
+        <h4>Số vé bán theo phim</h4>
+        <canvas id="chartVePhim"></canvas>
+    </div>
+
+    <div style="flex:1">
+        <h4>Doanh thu theo phim</h4>
+        <canvas id="chartDoanhThuPhim"></canvas>
+    </div>
+
+</div>
+
+
+<!-- Bảng thống kê -->
+<table class="table table-bordered table-striped">
+
+    <thead>
+        <tr>
+            <th>Tên phim</th>
+            <th>Tổng vé bán</th>
+            <th>Tổng doanh thu</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @if (ViewBag.DoanhThuPhim != null)
+        {
+            foreach (var p in ViewBag.DoanhThuPhim)
+            {
+                <tr>
+                    <td>@p.TenPhim</td>
+                    <td>@p.SoVe</td>
+                    <td>@String.Format("{0:N0}", p.DoanhThu) đ</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+
+</table>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    var tenPhim = [];
+    var soVe = [];
+    var doanhThu = [];
+
+    @foreach (var p in ViewBag.DoanhThuPhim)
+    {
+        <text>
+            tenPhim.push("@p.TenPhim");
+        soVe.push(@p.SoVe);
+        doanhThu.push(@p.DoanhThu);
+        </text>
+    }
+
+
+        // Biểu đồ số vé bán
+        new Chart(document.getElementById("chartVePhim"), {
+
+            type: 'bar',
+
+            data: {
+                labels: tenPhim,
+                datasets: [{
+                    label: 'Số vé bán',
+                    data: soVe,
+                    backgroundColor: 'skyblue'
+                }]
+            }
+
+        });
+
+
+    // Biểu đồ doanh thu
+
+    new Chart(document.getElementById("chartDoanhThuPhim"), {
+
+        type: 'bar',
+
+        data: {
+            labels: tenPhim,
+            datasets: [{
+                label: 'Doanh thu',
+                data: doanhThu,
+                backgroundColor: 'pink'
+            }]
+        }
+
+    });
+
+</script>

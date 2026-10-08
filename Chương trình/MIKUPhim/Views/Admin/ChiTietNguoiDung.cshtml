@@ -1,0 +1,85 @@
+﻿@model MIKUPhim.Models.NGUOIDUNG
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Chi tiết người dùng</h2>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4 text-center">
+
+                @if (Model.Avatar != null)
+                {
+                    <img src="/images/@Model.Avatar"
+                         width="120"
+                         style="border-radius:50%" />
+                }
+                else
+                {
+                    <div style="
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        background:#ccc;
+        font-size:50px;
+        display:flex;
+        align-items:center;
+        justify-content:center">
+
+                        @Model.HoTen.Substring(0,1)
+
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="col-md-8">
+
+                <p><b>Họ tên:</b> @Model.HoTen</p>
+
+                <p><b>Email:</b> @Model.Email</p>
+
+                <p><b>Số điện thoại:</b> @Model.SoDienThoai</p>
+
+                <p><b>Quyền:</b> @Model.VaiTro</p>
+
+                <p><b>Ngày tạo:</b> @Model.NgayTao.ToString("dd/MM/yyyy HH:mm")</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<a href="/Admin/ResetMatKhau/@Model.MaNguoiDung"
+   class="btn btn-warning"
+   onclick="return confirm('Reset mật khẩu về 123456?')">
+
+    Reset mật khẩu
+
+</a>
+
+<a href="/Admin/SuaNguoiDung/@Model.MaNguoiDung"
+   class="btn btn-primary">
+
+    Chỉnh sửa
+
+</a>
+
+<a href="/Admin/QuanLyNguoiDung"
+   class="btn btn-secondary">
+
+    ← Quay lại
+
+</a>

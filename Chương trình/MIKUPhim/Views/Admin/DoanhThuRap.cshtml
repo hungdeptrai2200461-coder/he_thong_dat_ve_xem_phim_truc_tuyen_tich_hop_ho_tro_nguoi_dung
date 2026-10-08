@@ -1,0 +1,104 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Doanh thu theo rạp</h2>
+
+<form method="get" style="margin-bottom:20px">
+
+    <input type="date" name="tuNgay" value="@ViewBag.TuNgay" />
+    <input type="date" name="denNgay" value="@ViewBag.DenNgay" />
+
+    <button type="submit" class="btn btn-primary">
+        Lọc dữ liệu
+    </button>
+
+</form>
+
+
+<div style="display:flex;gap:30px;margin-bottom:40px">
+
+    <div style="flex:1">
+        <h4>Số vé bán theo rạp</h4>
+        <canvas id="chartVeRap"></canvas>
+    </div>
+
+    <div style="flex:1">
+        <h4>Doanh thu theo rạp</h4>
+        <canvas id="chartDoanhThuRap"></canvas>
+    </div>
+
+</div>
+
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+        <tr>
+            <th>Rạp chiếu</th>
+            <th>Tổng vé bán</th>
+            <th>Tổng doanh thu</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @if (ViewBag.DoanhThuRap != null)
+        {
+            foreach (var r in ViewBag.DoanhThuRap)
+            {
+                <tr>
+                    <td>@r.TenRap</td>
+                    <td>@r.SoVe</td>
+                    <td>@String.Format("{0:N0}", r.DoanhThu) đ</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+
+</table>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    var tenRap = [];
+    var soVe = [];
+    var doanhThu = [];
+
+    @foreach (var r in ViewBag.DoanhThuRap)
+    {
+        <text>
+            tenRap.push("@Html.Raw(r.TenRap)");
+        soVe.push(@r.SoVe);
+        doanhThu.push(@r.DoanhThu);
+        </text>
+    }
+
+        new Chart(document.getElementById("chartVeRap"), {
+            type: 'bar',
+            data: {
+                labels: tenRap,
+                datasets: [{
+                    label: 'Số vé',
+                    data: soVe,
+                    backgroundColor: 'skyblue'
+                }]
+            }
+        });
+
+    new Chart(document.getElementById("chartDoanhThuRap"), {
+        type: 'bar',
+        data: {
+            labels: tenRap,
+            datasets: [{
+                label: 'Doanh thu',
+                data: doanhThu,
+                backgroundColor: 'orange'
+            }]
+        }
+    });
+
+</script>

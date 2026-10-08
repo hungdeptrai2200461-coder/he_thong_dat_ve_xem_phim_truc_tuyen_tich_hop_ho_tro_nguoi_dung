@@ -1,0 +1,539 @@
+﻿@model List<MIKUPhim.Models.GHE>
+@using MIKUPhim.Models
+
+@{
+    var suat = ViewBag.Suat as SUATCHIEU;
+    var gheDaBan = ViewBag.GheDaBan as List<int> ?? new List<int>();
+
+    int tongGhe = Model.Count;
+    int gheTrong = tongGhe - gheDaBan.Count;
+}
+
+<div class="booking-wrapper">
+
+    <!-- THÔNG BÁO -->
+    @if (TempData["Loi"] != null)
+    {
+        <div class="thong-bao-loi">@TempData["Loi"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="thong-bao-ok">@TempData["Success"]</div>
+    }
+
+    <!-- HEADER -->
+    <div class="booking-header">
+
+        <h4>
+            @suat?.PHONGCHIEU?.RAP?.TenRap |
+            @suat?.PHONGCHIEU?.TenPhong |
+            Số ghế (@gheTrong/@tongGhe)
+        </h4>
+
+        <p>
+            @suat?.NgayChieu.ToString("dd/MM/yyyy")
+            @suat?.GioBatDau.ToString(@"hh\:mm")
+            ~
+            @suat?.GioKetThuc.ToString(@"hh\:mm")
+        </p>
+
+    </div>
+
+    <!-- SCREEN -->
+    <div class="screen">
+        SCREEN
+    </div>
+
+    <!-- CHÚ THÍCH GHẾ -->
+    <div class="seat-legend">
+
+        <div class="legend-item">
+            <span class="legend-box normal"></span>
+            Ghế thường
+        </div>
+
+        <div class="legend-item">
+            <span class="legend-box vip"></span>
+            Ghế VIP
+        </div>
+
+        <div class="legend-item">
+            <span class="legend-box sweet"></span>
+            Ghế đôi
+        </div>
+
+        <!-- 🆕 GHẾ ĐANG CHỌN -->
+        <div class="legend-item">
+            <span class="legend-box selected-box"></span>
+            Ghế đang chọn
+        </div>
+
+        <div class="legend-item">
+            <span class="legend-box sold"></span>
+            Ghế đã bán
+        </div>
+
+    </div>
+
+    <form asp-action="DatGhe" method="post">
+
+        <input type="hidden"
+               name="maSuatChieu"
+               value="@suat?.MaSuatChieu" />
+
+        <!-- GHẾ -->
+        <div class="seat-area">
+
+            @{
+                var groupedSeats = Model
+                .OrderBy(g => g.DayGhe)
+                .ThenBy(g => g.SoGhe)
+                .GroupBy(g => g.DayGhe);
+            }
+
+            @foreach (var row in groupedSeats)
+            {
+                <div class="seat-row">
+
+                    @foreach (var ghe in row)
+                    {
+                        bool daBan = gheDaBan.Contains(ghe.MaGhe);
+
+                        string seatClass = "seat";
+
+                        if (daBan)
+                        {
+                            seatClass += " sold";
+                        }
+                        else
+                        {
+                            if (ghe.LoaiGhe == "VIP")
+                            {
+                                seatClass += " vip";
+                            }
+                            else if (ghe.LoaiGhe == "Sweetbox")
+                            {
+                                seatClass += " sweet";
+                            }
+                            else
+                            {
+                                seatClass += " available";
+                            }
+                        }
+
+                        <label class="@seatClass"
+                               title="MaGhe: @ghe.MaGhe">
+
+                            @if (!daBan)
+                            {
+                                <input type="checkbox"
+                                       name="danhSachGhe"
+                                       value="@ghe.MaGhe"
+                                       data-seat="@ghe.MaSoGhe"
+                                       data-price="@suat?.GiaVe"
+                                       data-phuthu="@ghe.PhuThu"
+                                       data-type="@ghe.LoaiGhe"
+                                       onchange="seatChanged(this)" />
+                            }
+
+                            @if (!daBan)
+                            {
+                                @ghe.MaSoGhe
+                            }
+
+                        </label>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+        <!-- INFO BOX -->
+        <div class="info-box">
+
+            <p>
+                <b>@suat?.PHIM?.TenPhim</b>
+            </p>
+
+            <p>
+                2D
+            </p>
+
+            <p>
+                @suat?.PHIM?.DoTuoi
+            </p>
+
+            <p>
+                Rạp
+                <span>@suat?.PHONGCHIEU?.RAP?.TenRap</span>
+            </p>
+
+            <p>
+                Suất chiếu
+                <span>
+                    @suat?.GioBatDau.ToString(@"hh\:mm"),
+                    @suat?.NgayChieu.ToString("dd/MM/yyyy")
+                </span>
+            </p>
+
+            <p>
+                Phòng chiếu
+                <span>@suat?.PHONGCHIEU?.TenPhong</span>
+            </p>
+
+            <p>
+                Ghế
+                <span id="selectedSeats">---</span>
+            </p>
+
+            <p>
+                Giá vé
+                <span id="ticketPrice">
+                    @suat?.GiaVe.ToString("N0") ₫
+                </span>
+            </p>
+
+            <p>
+                <b>
+                    Tổng
+                    <span id="totalPrice">0 ₫</span>
+                </b>
+            </p>
+
+            <div class="action-buttons">
+
+                <!-- 🔙 QUAY LẠI -->
+                <a href="/Home/ChonSuatChieu/@suat?.MaPhim"
+                   class="btn-back">
+                    ← Quay lại
+                </a>
+
+                <!-- 👉 NEXT -->
+                <button type="submit"
+                        class="btn-next">
+                    NEXT →
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+    .booking-wrapper {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .booking-header {
+        background: linear-gradient(90deg,#0f1a2e,#1f7a4c);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .screen {
+        margin: 20px auto;
+        padding: 12px;
+        width: 60%;
+        background: #ddd;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 6px;
+    }
+
+    .seat-legend {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin: 20px 0;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+    }
+
+    .legend-box {
+        width: 22px;
+        height: 22px;
+        margin-right: 8px;
+        border-radius: 4px;
+    }
+
+    .seat-area {
+        text-align: center;
+        margin: 30px 0;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .seat-row {
+        margin-bottom: 10px;
+        white-space: nowrap;
+    }
+
+    .seat {
+        width: 32px;
+        height: 32px;
+        margin: 4px;
+        border-radius: 6px;
+        border: 1px solid #999;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 11px;
+        transition: 0.2s;
+        position: relative;
+    }
+
+    .available {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .vip {
+        background: #FF9800;
+        color: white;
+    }
+
+    .sweet {
+        background: #E91E63;
+        color: white;
+    }
+
+    .selected {
+        background: #ff1744 !important;
+        color: white;
+        transform: scale(1.2);
+        box-shadow: 0 0 12px #ff1744;
+        z-index: 2;
+    }
+
+    .sold {
+        background-image: url('/images/avatarghe.png');
+        background-size: cover;
+        background-position: center;
+        cursor: not-allowed;
+        pointer-events: none;
+        color: transparent;
+        border: none;
+    }
+
+    .seat:hover {
+        transform: scale(1.15);
+    }
+
+    .seat input {
+        display: none;
+    }
+
+    .info-box {
+        background: black;
+        color: white;
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+        .info-box span {
+            float: right;
+        }
+
+    .btn-next {
+        background: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .legend-box.normal {
+        background: #4CAF50;
+    }
+
+    .legend-box.vip {
+        background: #FF9800;
+    }
+
+    .legend-box.sweet {
+        background: #E91E63;
+    }
+
+    .legend-box.sold {
+        background-image: url('/images/avatarghe.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .btn-back {
+        background: transparent;
+        border: 1px solid #ccc;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .btn-back:hover {
+            background: #444;
+        }
+
+    .btn-next {
+        background: red;
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+        .btn-next:hover {
+            background: #ff1744;
+        }
+
+    .legend-box.selected-box {
+        background: #ff1744;
+    }
+</style>
+
+<script>
+
+    function seatChanged(checkbox) {
+
+        const type = checkbox.dataset.type;
+        const label = checkbox.closest(".seat");
+
+        if (type === "Sweetbox") {
+
+            const row = label.parentElement;
+            const seats = Array.from(row.querySelectorAll("input[data-type='Sweetbox']"));
+            const index = seats.indexOf(checkbox);
+
+            let pairIndex;
+
+            if (index % 2 === 0)
+                pairIndex = index + 1;
+            else
+                pairIndex = index - 1;
+
+            const pairSeat = seats[pairIndex];
+
+            if (pairSeat) {
+
+                pairSeat.checked = checkbox.checked;
+
+                const pairLabel = pairSeat.closest(".seat");
+
+                if (checkbox.checked) {
+                    label.classList.add("selected");
+                    pairLabel.classList.add("selected");
+                }
+                else {
+                    label.classList.remove("selected");
+                    pairLabel.classList.remove("selected");
+                }
+
+            }
+
+        }
+        else {
+
+            if (checkbox.checked)
+                label.classList.add("selected");
+            else
+                label.classList.remove("selected");
+
+        }
+
+        updateInfo();
+
+    }
+
+    function updateInfo() {
+
+        const checkedSeats =
+            document.querySelectorAll("input[name='danhSachGhe']:checked");
+
+        let seatNames = [];
+        let total = 0;
+
+        checkedSeats.forEach(cb => {
+
+            seatNames.push(cb.dataset.seat);
+
+            let price = parseInt(cb.dataset.price) || 0;
+            let phuthu = parseInt(cb.dataset.phuthu) || 0;
+
+            total += price + phuthu;
+
+        });
+
+        document.getElementById("selectedSeats").innerText =
+            seatNames.length > 0 ? seatNames.join(", ") : "---";
+
+        document.getElementById("totalPrice").innerText =
+            total.toLocaleString("vi-VN") + " ₫";
+
+    }
+
+</script>
+<script>
+    let isSubmitting = false;
+
+    // khi bấm submit → KHÔNG hủy ghế
+    document.querySelectorAll("form").forEach(f => {
+        f.addEventListener("submit", function () {
+            isSubmitting = true;
+        });
+    });
+
+    // chỉ hủy khi THOÁT THẬT
+    window.addEventListener("beforeunload", function () {
+        if (!isSubmitting) {
+            navigator.sendBeacon("/Home/HuyGhe?maSuatChieu=@ViewBag.MaSuatChieu");
+        }
+    });
+</script>
+<style>
+    .thong-bao-loi {
+        max-width: 900px;
+        margin: 0 auto 18px;
+        padding: 13px 18px;
+        border-radius: 10px;
+        background: #3a1620;
+        border: 1px solid #a63b52;
+        color: #ffc2ce;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .thong-bao-ok {
+        max-width: 900px;
+        margin: 0 auto 18px;
+        padding: 13px 18px;
+        border-radius: 10px;
+        background: #12301f;
+        border: 1px solid #35c46a;
+        color: #d6f5e0;
+        font-weight: 600;
+        text-align: center;
+    }
+</style>

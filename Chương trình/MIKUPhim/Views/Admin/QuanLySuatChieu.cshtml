@@ -1,0 +1,295 @@
+﻿@model IEnumerable<MIKUPhim.Models.SUATCHIEU>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách suất chiếu</h2>
+
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+
+<h5>
+    Ngày đang xem:
+    <b>@(((DateTime)ViewBag.Ngay).ToString("dd/MM/yyyy"))</b>
+</h5>
+
+
+<form method="get">
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+
+            <input type="date"
+                   name="ngay"
+                   class="form-control"
+                   value="@ViewBag.Ngay.ToString("yyyy-MM-dd")" />
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button class="btn btn-primary">
+                Tìm kiếm
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+
+<button class="btn btn-success mb-3"
+        data-bs-toggle="modal"
+        data-bs-target="#modalThem">
+
+    + Thêm suất chiếu
+
+</button>
+
+
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Phòng</th>
+
+            <th>Phim</th>
+
+            <th>Thời gian chiếu</th>
+
+            <th>Giá vé</th>
+
+            <th>Trạng thái</th>
+
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var s in Model)
+        {
+
+            var now = DateTime.Now;
+
+            DateTime batDau = s.NgayChieu.Date + s.GioBatDau;
+            DateTime ketThuc = s.NgayChieu.Date + s.GioKetThuc;
+
+            string trangThai = "SapChieu";
+            string badge = "warning";
+
+            if (now >= batDau && now <= ketThuc)
+            {
+                trangThai = "DangChieu";
+                badge = "success";
+            }
+            else if (now > ketThuc)
+            {
+                trangThai = "DaChieu";
+                badge = "secondary";
+            }
+
+            <tr>
+
+                <td>@s.PHONGCHIEU?.TenPhong</td>
+
+                <td>@s.PHIM?.TenPhim</td>
+
+                <td>
+
+                    <b>@s.GioBatDau</b> - <b>@s.GioKetThuc</b>
+
+                </td>
+
+                <td>
+
+                    @String.Format("{0:N0}", s.GiaVe) đ
+
+                </td>
+
+                <td>
+
+                    <span class="badge bg-@badge">
+                        @trangThai
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a href="/Admin/SuaSuatChieu/@s.MaSuatChieu"
+                       class="btn btn-warning btn-sm">
+
+                        Sửa
+
+                    </a>
+
+                    <a href="/Admin/XoaSuatChieu/@s.MaSuatChieu"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa suất chiếu này?')">
+
+                        Xóa
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+
+<!-- MODAL THÊM SUẤT CHIẾU -->
+
+<div class="modal fade" id="modalThem">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form method="post" action="/Admin/ThemSuatChieu">
+
+                <div class="modal-header">
+                    <h5>Thêm suất chiếu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- PHIM -->
+                    <label>Phim</label>
+                    <select name="MaPhim" id="phimSelect" class="form-control">
+                        @foreach (var p in ViewBag.Phim)
+                        {
+                            <option value="@p.MaPhim">@p.TenPhim</option>
+                        }
+                    </select>
+
+                    <!-- 🔥 THÊM RẠP -->
+                    <label class="mt-2">Rạp</label>
+                    <select id="rapSelect" class="form-control">
+                        <option value="">-- Chọn rạp --</option>
+                        @foreach (var r in ViewBag.Rap)
+                        {
+                            <option value="@r.MaRap">@r.TenRap</option>
+                        }
+                    </select>
+
+                    <!-- PHÒNG (LOAD THEO RẠP) -->
+                    <label class="mt-2">Phòng</label>
+                    <select name="MaPhong" id="phongSelect" class="form-control">
+                        <option value="">-- Chọn phòng --</option>
+                    </select>
+
+                    <!-- NGÀY -->
+                    <label class="mt-2">Ngày chiếu</label>
+                    <input type="date" name="NgayChieu" class="form-control" required />
+
+                    <input type="time"
+                           name="GioBatDau"
+                           class="form-control"
+                           step="60"
+                           lang="en-GB"
+                           required />
+
+                    <input type="time"
+                           name="GioKetThuc"
+                           class="form-control"
+                           step="60"
+                           lang="en-GB"
+                           required />
+
+                    <!-- GIÁ -->
+                    <label class="mt-2">Giá vé</label>
+                    <input type="number" name="GiaVe" class="form-control" required />
+
+                    <!-- 🔥 HIDDEN THỜI LƯỢNG -->
+                    <input type="hidden" id="thoiLuong" />
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button class="btn btn-success">Lưu</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    // 🔥 LOAD PHÒNG THEO RẠP
+    document.getElementById("rapSelect").addEventListener("change", function () {
+        var maRap = this.value;
+
+        fetch('/Admin/GetPhongByRap?maRap=' + maRap)
+            .then(res => res.json())
+            .then(data => {
+                var phong = document.getElementById("phongSelect");
+                phong.innerHTML = '<option value="">-- Chọn phòng --</option>';
+
+                data.forEach(p => {
+                    phong.innerHTML += `<option value="${p.maPhong}">${p.tenPhong}</option>`;
+                });
+            });
+    });
+
+
+    // 🔥 LOAD THỜI LƯỢNG PHIM
+    document.getElementById("phimSelect").addEventListener("change", function () {
+        var maPhim = this.value;
+
+        fetch('/Admin/GetThoiLuong?maPhim=' + maPhim)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("thoiLuong").value = data;
+            });
+    });
+
+
+    // 🔥 AUTO TÍNH GIỜ KẾT THÚC
+    document.getElementById("gioBatDau").addEventListener("change", function () {
+
+        var gioBatDau = this.value;
+        var thoiLuong = parseInt(document.getElementById("thoiLuong").value);
+
+        if (!gioBatDau || !thoiLuong) return;
+
+        var parts = gioBatDau.split(":");
+        var date = new Date();
+
+        date.setHours(parts[0]);
+        date.setMinutes(parts[1]);
+
+        date.setMinutes(date.getMinutes() + thoiLuong);
+
+        var h = String(date.getHours()).padStart(2, '0');
+        var m = String(date.getMinutes()).padStart(2, '0');
+
+        document.getElementById("gioKetThuc").value = h + ":" + m;
+    });
+
+</script>

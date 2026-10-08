@@ -1,0 +1,223 @@
+﻿@model IEnumerable<MIKUPhim.Models.PHIM>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách phim</h2>
+
+<div style="margin-bottom:20px;display:flex;justify-content:space-between">
+
+    <form method="get">
+
+        <input type="text"
+               name="search"
+               placeholder="Tìm tên phim..."
+               class="form-control"
+               style="width:300px;display:inline-block" />
+
+        <button class="btn btn-primary">
+            Tìm kiếm
+        </button>
+
+    </form>
+
+    <a href="/Admin/ThemPhim" class="btn btn-primary">
+        + Thêm phim
+    </a>
+
+</div>
+
+<form method="get" style="margin-bottom:20px">
+
+    <input type="text"
+           name="search"
+           placeholder="Tìm tên phim..."
+           class="form-control"
+           style="width:200px;display:inline-block" />
+
+    <select name="trangThai"
+            class="form-control"
+            style="width:200px;display:inline-block">
+
+        <option value="">Tất cả trạng thái</option>
+        <option value="dang_chieu">Đang chiếu</option>
+        <option value="sap_chieu">Sắp chiếu</option>
+
+    </select>
+
+    <button class="btn btn-primary">
+        Lọc
+    </button>
+
+</form>
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã</th>
+            <th>Poster</th>
+            <th>Tên phim</th>
+            <th>Thể loại</th>
+            <th>Trailer</th>
+            <th>Đạo diễn</th>
+            <th>Thời lượng</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        @foreach (var p in Model)
+        {
+
+            <tr>
+
+                <td>@p.MaPhim</td>
+
+                <td>
+
+                    @if (!string.IsNullOrEmpty(p.Poster))
+                    {
+                        <img src="@Url.Content("~/images/" + p.Poster)"
+                             style="width:60px;height:80px;object-fit:cover;border-radius:5px;">
+                    }
+
+                </td>
+
+
+                <td>
+                    <strong>@p.TenPhim</strong>
+                </td>
+
+
+                <td>
+
+                    @if (!string.IsNullOrEmpty(p.TheLoai))
+                    {
+                        foreach (var tl in p.TheLoai.Split(','))
+                        {
+                            <span class="badge bg-primary" style="margin-right:5px">
+                                @tl.Trim()
+                            </span>
+                        }
+                    }
+
+                </td>
+
+
+                <td>
+
+                    @if (!string.IsNullOrEmpty(p.TrailerUrl))
+                    {
+                        <button onclick="openTrailer('@p.TrailerUrl')"
+                                class="btn btn-info btn-sm">
+                            Xem trailer
+                        </button>
+                    }
+
+                </td>
+
+
+                <td>@p.DaoDien</td>
+
+
+                <td>@p.ThoiLuong phút</td>
+
+
+                <td>
+
+                    @if (p.TrangThai == "dang_chieu")
+                    {
+                        <span class="badge bg-success">Đang chiếu</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Sắp chiếu</span>
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <a href="/Admin/SuaPhim/@p.MaPhim"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/Admin/XoaPhim/@p.MaPhim"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa phim này?')">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+<div style="margin-top:20px">
+
+    @for (int i = 1; i <= ViewBag.TotalPage; i++)
+    {
+        <a href="?page=@i"
+           class="btn btn-light">
+
+            @i
+
+        </a>
+    }
+
+</div>
+<div id="trailerModal"
+     style="display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.7);
+            justify-content:center;
+            align-items:center;">
+
+    <div style="background:white;padding:10px;position:relative">
+
+        <button onclick="closeTrailer()"
+                style="position:absolute;top:5px;right:5px;border:none;background:red;color:white">
+            X
+        </button>
+
+        <iframe id="trailerFrame"
+                width="560"
+                height="315"
+                frameborder="0"
+                allowfullscreen>
+        </iframe>
+
+    </div>
+
+</div>
+<script>
+
+    function openTrailer(url) {
+        document.getElementById("trailerModal").style.display = "flex";
+        document.getElementById("trailerFrame").src = url;
+    }
+
+    function closeTrailer() {
+        document.getElementById("trailerModal").style.display = "none";
+        document.getElementById("trailerFrame").src = "";
+    }
+
+</script>

@@ -1,0 +1,91 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|d:\\ch\u01B0\u01A1ng tr\u00ECnh\\ch\u01B0\u01A1ng tr\u00ECnh\\mikuphim\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|d:\\ch\u01B0\u01A1ng tr\u00ECnh\\ch\u01B0\u01A1ng tr\u00ECnh\\mikuphim\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|d:\\ch\u01B0\u01A1ng tr\u00ECnh\\ch\u01B0\u01A1ng tr\u00ECnh\\mikuphim\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|d:\\ch\u01B0\u01A1ng tr\u00ECnh\\ch\u01B0\u01A1ng tr\u00ECnh\\mikuphim\\mikuphim.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{8E6E6F11-5BA2-4A88-BF2C-09AEA7FC6567}|MIKUPhim.csproj|solutionrelative:mikuphim.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MIKUPhim",
+              "DocumentMoniker": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\MIKUPhim.csproj",
+              "RelativeDocumentMoniker": "MIKUPhim.csproj",
+              "ToolTip": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\MIKUPhim.csproj",
+              "RelativeToolTip": "MIKUPhim.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-02T12:01:29.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
+              "ToolTip": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Properties\\launchSettings.json",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-02T12:01:17.791Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAqwDIAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-02T12:01:08.571Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\Ch\u01B0\u01A1ng tr\u00ECnh\\Ch\u01B0\u01A1ng tr\u00ECnh\\MIKUPhim\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-02T11:52:16.961Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+﻿@model MIKUPhim.Models.NGUOIDUNG
+
+<div class="register-container">
+
+    <!-- PARTICLES -->
+    <div id="particles"></div>
+
+    <h2 class="register-title">Đăng ký tài khoản</h2>
+
+    <div class="register-card">
+
+        <!-- LEFT: FORM -->
+        <div class="register-left">
+
+            <form asp-action="Register" method="post" enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 d-none"></div>
+
+                <div class="mb-3">
+                    <label>Họ tên <span class="bat-buoc">*</span></label>
+                    <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên..." />
+                    <span asp-validation-for="HoTen" class="loi-nhap"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label>Email <span class="bat-buoc">*</span></label>
+                    <input asp-for="Email" class="form-control" placeholder="Nhập email..." />
+                    <span asp-validation-for="Email" class="loi-nhap"></span>
+                </div>
+
+                <div class="mb-3 password-box">
+                    <label>Mật khẩu <span class="bat-buoc">*</span></label>
+                    <input id="password" asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu..." />
+                    <span class="toggle-password" onclick="togglePassword()">👁</span>
+                    <span asp-validation-for="MatKhau" class="loi-nhap"></span>
+                    <div class="goi-y">Ít nhất 6 ký tự, gồm cả chữ và số.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Nhập lại mật khẩu <span class="bat-buoc">*</span></label>
+                    <input name="XacNhanMatKhau" type="password" class="form-control"
+                           placeholder="Nhập lại mật khẩu..." />
+                    @if (ViewData.ModelState["XacNhanMatKhau"]?.Errors.Count > 0)
+                    {
+                        <span class="loi-nhap">
+                            @ViewData.ModelState["XacNhanMatKhau"].Errors[0].ErrorMessage
+                        </span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label>Số điện thoại <span class="bat-buoc">*</span></label>
+                    <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại..." />
+                    <span asp-validation-for="SoDienThoai" class="loi-nhap"></span>
+                </div>
+
+                <!-- AVATAR -->
+                <div class="mb-3">
+                    <label>Avatar</label>
+
+                    <input type="file" name="avatarFile" class="form-control"
+                           accept=".jpg,.jpeg,.png,.gif,.webp" onchange="previewAvatar(event)" />
+
+                    @if (ViewData.ModelState["avatarFile"]?.Errors.Count > 0)
+                    {
+                        <span class="loi-nhap">
+                            @ViewData.ModelState["avatarFile"].Errors[0].ErrorMessage
+                        </span>
+                    }
+
+                    <div class="goi-y">Định dạng JPG, PNG, GIF hoặc WEBP, tối đa 5 MB.</div>
+
+                    <div class="avatar-preview mt-2">
+                        <img id="avatarPreview" src="/images/default-avatar.png" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    Đăng ký
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- RIGHT: MIKU -->
+        <div class="register-right">
+
+            <video autoplay loop muted playsinline>
+                <source src="~/images/gifmikudk.mp4" type="video/mp4">
+            </video>
+
+            <h4 id="miku-text"></h4>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// 👁 SHOW PASSWORD
+function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+// 🖼 PREVIEW AVATAR
+function previewAvatar(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+        document.getElementById("avatarPreview").src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+// 🤖 MIKU TEXT
+const text = "Chào bạn! Đăng ký để cùng Miku đi xem phim nhé 🎬✨";
+let i = 0;
+
+function typeEffect() {
+    if (i < text.length) {
+        document.getElementById("miku-text").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeEffect, 40);
+    }
+}
+typeEffect();
+
+// ✨ PARTICLES
+for (let i = 0; i < 30; i++) {
+    let p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.animationDuration = (3 + Math.random() * 5) + "s";
+    document.getElementById("particles").appendChild(p);
+}
+
+</script>
+<style>
+    .bat-buoc {
+        color: #ff6b6b;
+    }
+
+    .loi-nhap {
+        display: block;
+        color: #ff8585;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .goi-y {
+        color: #9aa7bd;
+        font-size: 12.5px;
+        margin-top: 4px;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,165 @@
+{
+  "intents": [
+
+    {
+      "tag": "greeting",
+      "patterns": [
+        "xin chào",
+        "chào",
+        "hi",
+        "hello",
+        "helo",
+        "alo",
+        "hey",
+        "hi miku",
+        "hello miku",
+        "chào miku"
+      ]
+    },
+
+    {
+      "tag": "movie_list",
+      "patterns": [
+        "phim đang chiếu",
+        "danh sách phim",
+        "rạp có phim gì",
+        "hiện đang chiếu phim gì"
+      ]
+    },
+
+    {
+      "tag": "movie_search",
+      "patterns": [
+        "tìm phim",
+        "thông tin phim",
+        "cho mình xem phim",
+        "phim này là gì",
+        "nội dung phim",
+        "giới thiệu phim"
+      ]
+    },
+
+    {
+      "tag": "showtime",
+      "patterns": [
+        "lịch chiếu",
+        "suất chiếu",
+        "suất chiếu gần nhất",
+        "suất gần nhất",
+        "phim chiếu lúc nào",
+        "mấy giờ chiếu"
+      ]
+    },
+
+    {
+      "tag": "seat_check",
+      "patterns": [
+        "còn ghế không",
+        "ghế còn không",
+        "ghế trống",
+        "suất này còn ghế không",
+        "còn vé không"
+      ]
+    },
+
+    {
+      "tag": "ticket_price",
+      "patterns": [
+        "giá vé",
+        "vé bao nhiêu",
+        "vé bao nhiêu tiền",
+        "giá vé phim",
+        "giá ghế vip",
+        "giá ghế đôi"
+      ]
+    },
+
+    {
+      "tag": "combo",
+      "patterns": [
+        "combo",
+        "bắp nước",
+        "combo bắp nước",
+        "đồ ăn rạp",
+        "có combo gì"
+      ]
+    },
+
+    {
+      "tag": "promotion",
+      "patterns": [
+        "khuyến mãi",
+        "ưu đãi",
+        "giảm giá",
+        "rạp có khuyến mãi gì"
+      ]
+    },
+
+    {
+      "tag": "cinema_info",
+      "patterns": [
+        "rạp ở đâu",
+        "địa chỉ rạp",
+        "thông tin rạp",
+        "rạp miku ở đâu"
+      ]
+    },
+
+    {
+      "tag": "imax",
+      "patterns": [
+        "imax",
+        "phim imax",
+        "có chiếu imax không",
+        "phòng imax"
+      ]
+    },
+
+    {
+      "tag": "recommend",
+      "patterns": [
+        "phim hay",
+        "gợi ý phim",
+        "nên xem phim gì",
+        "phim nào hay"
+      ]
+    },
+
+    {
+      "tag": "fallback",
+      "patterns": []
+    },
+    {
+      "tag": "policy",
+      "patterns": [
+        "chính sách",
+        "chính sách rạp",
+        "quy định rạp",
+        "nội quy rạp"
+      ]
+    },
+    {
+      "tag": "genre",
+      "patterns": [
+        "phim hoạt hình",
+        "phim hành động",
+        "phim kinh dị",
+        "phim tình cảm"
+      ]
+    },
+    {
+      "tag": "recommend",
+      "patterns": [
+        "phim hay",
+        "gợi ý phim",
+        "nên xem phim gì",
+        "phim nào hay",
+        "hôm nay xem phim gì",
+        "hôm nay buồn xem gì",
+        "xem phim cho vui",
+        "xem phim gì cho vui"
+      ]
+    }
+
+  ]
+}

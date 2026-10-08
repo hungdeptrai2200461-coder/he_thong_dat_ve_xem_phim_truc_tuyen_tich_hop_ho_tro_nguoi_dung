@@ -1,0 +1,155 @@
+﻿@model MIKUPhim.Models.VE
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    decimal giaVe = Model.SUATCHIEU?.GiaVe ?? 0;
+
+    var comboList = ViewBag.Combo as List<MIKUPhim.Models.VE_COMBO>;
+
+    decimal giaCombo = 0;
+
+    if (comboList != null)
+    {
+        giaCombo = comboList.Sum(x => x.COMBO.Gia * x.SoLuong);
+    }
+
+    decimal tongTien = giaVe + giaCombo;
+}
+
+<h2>Chi tiết vé</h2>
+
+<div class="card mb-3">
+
+    <div class="card-body">
+
+        <p>
+            <b>Phim:</b>
+            @Model.SUATCHIEU?.PHIM?.TenPhim
+        </p>
+
+        <p>
+            <b>Phòng:</b>
+            @Model.SUATCHIEU?.PHONGCHIEU?.TenPhong
+        </p>
+
+        <p>
+            <b>Ghế:</b>
+            @Model.GHE?.MaSoGhe
+        </p>
+
+        <p>
+            <b>Suất chiếu:</b><br>
+
+            Ngày:
+            @Model.SUATCHIEU?.NgayChieu.ToString("dd/MM/yyyy")
+
+            <br>
+
+            Giờ:
+            @Model.SUATCHIEU?.GioBatDau - @Model.SUATCHIEU?.GioKetThuc
+        </p>
+
+        <p>
+            <b>Giá vé:</b>
+            @String.Format("{0:N0}", giaVe) đ
+        </p>
+
+        <p>
+            <b>Thời điểm đặt:</b>
+            @Model.ThoiDiemDat
+        </p>
+
+    </div>
+
+</div>
+
+
+<h4>Combo</h4>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Tên combo</th>
+
+            <th>Số lượng</th>
+
+            <th>Giá</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @if (comboList != null && comboList.Count > 0)
+        {
+            foreach (var c in comboList)
+            {
+                <tr>
+
+                    <td>@c.COMBO.TenCombo</td>
+
+                    <td>@c.SoLuong</td>
+
+                    <td>
+                        @String.Format("{0:N0}", c.COMBO.Gia * c.SoLuong) đ
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+
+                <td colspan="3" class="text-center">
+
+                    Không có combo
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+<div class="mt-3">
+
+    <h5>
+
+        Tổng tiền:
+        <span class="text-danger">
+
+            @String.Format("{0:N0}", tongTien) đ
+
+        </span>
+
+    </h5>
+
+</div>
+
+
+<br>
+
+
+<a href="/Admin/SuaVe/@Model.MaVe"
+   class="btn btn-warning">
+
+    Sửa vé
+
+</a>
+
+
+<a href="/Admin/QuanLyVe"
+   class="btn btn-secondary">
+
+    ← Quay lại
+
+</a>

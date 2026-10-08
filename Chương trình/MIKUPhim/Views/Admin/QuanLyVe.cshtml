@@ -1,0 +1,166 @@
+﻿@model IEnumerable<MIKUPhim.Models.VE>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách vé</h2>
+
+<a href="/Admin/ThemVe"
+   class="btn btn-success mb-3">
+
+    + Thêm vé
+
+</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã vé</th>
+
+            <th>Phim</th>
+
+            <th>Phòng</th>
+
+            <th>Ghế</th>
+
+            <th>Suất chiếu</th>
+
+            <th>Giá vé</th>
+
+            <th>Combo</th>
+
+            <th>Tổng tiền</th>
+
+            <th>Trạng thái</th>
+
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var v in Model)
+        {
+            var comboList = ((List<MIKUPhim.Models.VE_COMBO>)ViewBag.Combo)
+            .Where(x => x.MaVe == v.MaVe)
+            .ToList();
+
+            decimal giaVe = v.SUATCHIEU?.GiaVe ?? 0;
+
+            decimal giaCombo = comboList.Sum(x => x.COMBO.Gia * x.SoLuong);
+
+            decimal tongTien = giaVe + giaCombo;
+
+            <tr>
+
+                <td>#@v.MaVe</td>
+
+                <td>@v.SUATCHIEU?.PHIM?.TenPhim</td>
+
+                <td>@v.SUATCHIEU?.PHONGCHIEU?.TenPhong</td>
+
+                <td>@v.GHE?.MaSoGhe</td>
+
+                <td>
+
+                    @v.SUATCHIEU?.NgayChieu.ToString("dd/MM/yyyy")
+
+                    <br />
+
+                    @v.SUATCHIEU?.GioBatDau - @v.SUATCHIEU?.GioKetThuc
+
+                </td>
+
+                <td>
+
+                    @String.Format("{0:N0}", giaVe) đ
+
+                </td>
+
+                <td>
+
+                    @if (comboList.Count == 0)
+                    {
+                        <span>Không</span>
+                    }
+                    else
+                    {
+                        foreach (var c in comboList)
+                        {
+                            <div>
+                                @c.COMBO.TenCombo x @c.SoLuong
+                            </div>
+                        }
+                    }
+
+                </td>
+
+                <td>
+
+                    <b>
+
+                        @String.Format("{0:N0}", tongTien) đ
+
+                    </b>
+
+                </td>
+
+                <td>
+
+                    @if (v.TrangThai == 1)
+                    {
+                        <span class="badge bg-success">
+
+                            Đã sử dụng
+
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">
+
+                            Chưa sử dụng
+
+                        </span>
+                    }
+
+                </td>
+
+                <td>
+
+                    <a href="/Admin/ChiTietVe/@v.MaVe"
+                       class="btn btn-info btn-sm">
+
+                        Chi tiết
+
+                    </a>
+
+                    <a href="/Admin/SuaVe/@v.MaVe"
+                       class="btn btn-warning btn-sm">
+
+                        Sửa
+
+                    </a>
+
+                    <a href="/Admin/XoaVe/@v.MaVe"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa vé này?')">
+
+                        Xóa
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

@@ -1,0 +1,86 @@
+﻿@model IEnumerable<MIKUPhim.Models.PHONGCHIEU>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách phòng chiếu</h2>
+
+<a href="/Admin/ThemPhong" class="btn btn-primary mb-3">
+    + Thêm phòng
+</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+            <th>Mã</th>
+            <th>Tên phòng</th>
+            <th>Rạp</th>
+            <th>Tổng ghế</th>
+            <th>Thao tác</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+
+                <td>@p.MaPhong</td>
+
+                <td>@p.TenPhong</td>
+
+                <td>@p.RAP?.TenRap</td>
+
+                <td>@p.TongSoGhe</td>
+
+                <td>
+
+                    <a href="/Admin/QuanLyGhe?maPhong=@p.MaPhong"
+                       class="btn btn-info btn-sm">
+                        Ghế
+                    </a>
+
+                    <a href="/Admin/SuaPhong/@p.MaPhong"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/Admin/XoaPhong/@p.MaPhong"
+                       class="btn btn-danger btn-sm">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+<nav>
+    <ul class="pagination">
+
+        @for (int i = 1; i <= ViewBag.TotalPage; i++)
+        {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+
+                <a class="page-link"
+                   href="/Admin/QuanLyPhong?page=@i">
+
+                    @i
+
+                </a>
+
+            </li>
+        }
+
+    </ul>
+</nav>

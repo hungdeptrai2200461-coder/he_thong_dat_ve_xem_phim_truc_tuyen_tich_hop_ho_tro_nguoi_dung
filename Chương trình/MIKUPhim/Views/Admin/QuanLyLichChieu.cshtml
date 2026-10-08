@@ -1,0 +1,273 @@
+﻿@model IEnumerable<MIKUPhim.Models.LICHCHIEU>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách lịch chiếu</h2>
+
+
+<div class="mb-3">
+
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalThem">
+
+        + Tạo lịch chiếu
+
+    </button>
+
+
+    <!-- lọc trạng thái -->
+
+    <form method="get"
+          action="/Admin/QuanLyLichChieu"
+          style="display:inline-block;margin-left:20px">
+
+        <select name="locTrangThai"
+                class="form-select"
+                style="width:200px;display:inline-block">
+
+            <option value="">Tất cả</option>
+
+            <option value="DangChieu"
+                    selected="@(ViewBag.TrangThai == "DangChieu")">
+
+                Đang chiếu
+
+            </option>
+
+            <option value="SapChieu"
+                    selected="@(ViewBag.TrangThai == "SapChieu")">
+
+                Sắp chiếu
+
+            </option>
+
+        </select>
+
+        <button class="btn btn-secondary">
+            Lọc
+        </button>
+
+    </form>
+
+</div>
+
+
+
+<table class="table table-bordered table-striped mt-3">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã</th>
+
+            <th>Phim</th>
+
+            <th>Ngày bắt đầu</th>
+
+            <th>Ngày kết thúc</th>
+
+            <th>Trạng thái</th>
+
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var s in Model)
+        {
+            <tr>
+
+                <td>@s.MaLich</td>
+
+                <td>@s.PHIM?.TenPhim</td>
+
+                <td>@s.NgayBatDau.ToString("dd/MM/yyyy")</td>
+
+                <td>@s.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+
+                <td>
+
+                    @if (s.TrangThai == "DangChieu")
+                    {
+                        <span class="badge bg-success">
+                            Đang chiếu
+                        </span>
+                    }
+
+                    else if (s.TrangThai == "SapChieu")
+                    {
+                        <span class="badge bg-warning">
+                            Sắp chiếu
+                        </span>
+                    }
+
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            Đã kết thúc
+                        </span>
+                    }
+
+                </td>
+
+                <td>
+
+                    <a href="/Admin/SuaLichChieu/@s.MaLich"
+                       class="btn btn-warning btn-sm">
+
+                        Sửa
+
+                    </a>
+
+                    <a href="/Admin/XoaLichChieu/@s.MaLich"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa lịch chiếu này?')">
+
+                        Xóa
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+
+<!-- PHÂN TRANG -->
+
+<nav>
+
+    <ul class="pagination">
+
+        @for (int i = 1; i <= ViewBag.TotalPage; i++)
+        {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+
+                <a class="page-link"
+                   href="/Admin/QuanLyLichChieu?page=@i">
+
+                    @i
+
+                </a>
+
+            </li>
+        }
+
+    </ul>
+
+</nav>
+
+
+
+<!-- MODAL THÊM LỊCH CHIẾU -->
+
+<div class="modal fade" id="modalThem">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form method="post" action="/Admin/ThemLichChieu">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">Tạo lịch chiếu</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+
+                    <label>Phim</label>
+
+                    <select name="MaPhim"
+                            class="form-control">
+
+                        @foreach (var p in ViewBag.Phim)
+                        {
+                            <option value="@p.MaPhim">
+                                @p.TenPhim
+                            </option>
+                        }
+
+                    </select>
+
+
+                    <label class="mt-2">Ngày bắt đầu</label>
+
+                    <input type="date"
+                           name="NgayBatDau"
+                           class="form-control"
+                           required />
+
+
+                    <label class="mt-2">Ngày kết thúc</label>
+
+                    <input type="date"
+                           name="NgayKetThuc"
+                           class="form-control"
+                           required />
+
+
+                    <label class="mt-2">Trạng thái</label>
+
+                    <select name="TrangThai"
+                            class="form-control">
+
+                        <option value="DangChieu">
+                            Đang chiếu
+                        </option>
+
+                        <option value="SapChieu">
+                            Sắp chiếu
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Đóng
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        Lưu
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

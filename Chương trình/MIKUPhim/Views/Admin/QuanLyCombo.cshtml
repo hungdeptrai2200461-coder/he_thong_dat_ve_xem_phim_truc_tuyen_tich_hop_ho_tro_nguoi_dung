@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MIKUPhim.Models.COMBO>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Quản lý Combo</h2>
+
+<a href="/Admin/ThemCombo"
+   class="btn btn-success mb-3">
+
+    + Thêm Combo
+
+</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Hình</th>
+            <th>Tên combo</th>
+            <th>Mô tả</th>
+            <th>Giá</th>
+            <th>Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var c in Model)
+        {
+            <tr>
+
+                <td>
+
+                    <img src="/images/@c.HinhAnh"
+                         width="100">
+
+                </td>
+
+                <td>@c.TenCombo</td>
+
+                <td>@c.MoTa</td>
+
+                <td>@String.Format("{0:N0}", c.Gia) đ</td>
+
+                <td>
+
+                    <a href="/Admin/SuaCombo/@c.MaCombo"
+                       class="btn btn-warning btn-sm">
+
+                        Sửa
+
+                    </a>
+
+                    <a href="/Admin/XoaCombo/@c.MaCombo"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa combo này?')">
+
+                        Xóa
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

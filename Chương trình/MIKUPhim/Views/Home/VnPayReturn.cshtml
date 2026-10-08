@@ -1,0 +1,326 @@
+﻿@{
+    var suat = ViewBag.Suat;
+}
+
+@if (suat != null)
+{
+    <div class="success-bg"
+         style="background-image:url('/images/@suat.PHIM.Poster')">
+
+        <div class="success-overlay">
+
+            <div class="container ticket-card">
+
+                <!-- HEADER -->
+                <div class="text-center mb-4">
+
+                    <h2 class="success-title glow">
+                        ✔ Thanh toán thành công!
+                    </h2>
+
+                    <p class="sub-text">
+                        Cảm ơn bạn đã đặt vé tại MIKU CINEMAS
+                    </p>
+
+                </div>
+
+                <!-- MAIN -->
+                <div class="ticket-layout">
+
+                    <!-- LEFT -->
+                    <div class="poster-area">
+                        <img src="~/images/@suat.PHIM.Poster"
+                             class="poster-big" />
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="ticket-info">
+
+                        <div class="info-row">
+
+                            <!-- LEFT TEXT -->
+                            <div class="info-left">
+
+                                <h4 class="section-title glow">
+                                    🎬 Thông tin vé
+                                </h4>
+
+                                <p><span class="label">Phim:</span> <span class="value">@suat.PHIM.TenPhim</span></p>
+
+                                <p>
+                                    <span class="label">Ngày chiếu:</span>
+                                    <span class="value">@suat.NgayChieu.ToString("dd/MM/yyyy")</span>
+                                </p>
+
+                                <p>
+                                    <span class="label">Giờ chiếu:</span>
+                                    <span class="value">@suat.GioBatDau.ToString(@"hh\:mm")</span>
+                                </p>
+
+                                <p>
+                                    <span class="label">Ghế:</span>
+                                    <span class="value highlight">@ViewBag.Ghe</span>
+                                </p>
+
+                                <p>
+                                    <span class="label">Mã đơn:</span>
+                                    <span class="value">#@ViewBag.MaDonHang</span>
+                                </p>
+
+                                <hr />
+
+                                <h4 class="section-title glow">
+                                    💳 Thanh toán
+                                </h4>
+
+                                <p>
+                                    <span class="label">Phương thức:</span>
+                                    <span class="value">@ViewBag.PhuongThuc</span>
+                                </p>
+
+                                <p class="price glow">
+                                    @String.Format("{0:N0}", ViewBag.TongTien) ₫
+                                </p>
+
+                                <a href="/Home/Index"
+                                   class="btn-home glow-btn">
+                                    Trang chủ
+                                </a>
+
+                            </div>
+
+                            <!-- RIGHT QR -->
+                            <div class="info-right">
+
+                                <div class="qr-box glow-box">
+
+                                    <p class="qr-text">Quét mã tại rạp</p>
+
+                                    <img src="/Home/QrCode/@ViewBag.MaVe"
+                                         class="qr-img" />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="container text-center mt-5">
+
+        <h2 style="color:red">❌ Thanh toán thất bại</h2>
+
+        <p class="mt-3">
+            Giao dịch đã bị hủy hoặc không thành công.
+        </p>
+
+        @if (TempData["Loi"] != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @TempData["Loi"]
+            </div>
+        }
+
+        <div class="mt-4">
+
+            <a href="/Home/Index"
+               class="btn btn-primary">
+                Trang chủ
+            </a>
+
+        </div>
+
+    </div>
+}
+
+<style>
+
+    /* ===== BACKGROUND ===== */
+    .success-bg {
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+    }
+
+    .success-overlay {
+        background: rgba(0,0,0,0.9);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ===== CARD ===== */
+    .ticket-card {
+        background: linear-gradient(145deg,#0f1a2e,#152642);
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 1100px;
+        width: 100%;
+        color: white;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+        animation: fadeIn 0.5s ease;
+    }
+
+    /* ===== HEADER ===== */
+    .success-title {
+        color: #00e6c3;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .sub-text {
+        color: #ccc;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .ticket-layout {
+        display: flex;
+        gap: 50px;
+    }
+
+    /* ===== LEFT ===== */
+    .poster-area {
+        flex: 1;
+        text-align: center;
+    }
+
+    .poster-big {
+        width: 280px;
+        height: 400px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    /* ===== RIGHT ===== */
+    .ticket-info {
+        flex: 2;
+    }
+
+    /* 🔥 CHIA 2 CỘT */
+    .info-row {
+        display: flex;
+        gap: 40px;
+    }
+
+    .info-left {
+        flex: 2;
+    }
+
+    .info-right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ===== TEXT ===== */
+    .label {
+        color: #aaa;
+    }
+
+    .value {
+        color: #fff;
+    }
+
+    .highlight {
+        color: #00e6c3;
+        font-weight: 700;
+    }
+
+    /* ===== SECTION ===== */
+    .section-title {
+        color: #00e6c3;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    /* ===== PRICE ===== */
+    .price {
+        font-size: 26px;
+        font-weight: bold;
+        color: #ff4d4f;
+    }
+
+    /* ===== QR ===== */
+    .qr-box {
+        text-align: center;
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.05);
+        transition: 0.3s;
+    }
+
+        .qr-box:hover {
+            box-shadow: 0 0 25px #00e6c3;
+        }
+
+    .qr-text {
+        margin-bottom: 10px;
+    }
+
+    .qr-img {
+        width: 160px;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+        .qr-img:hover {
+            box-shadow: 0 0 25px #00e6c3;
+        }
+
+    /* ===== BUTTON ===== */
+    .btn-home {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 30px;
+        background: linear-gradient(90deg,#00e6c3,#00bfa6);
+        color: black;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    /* ===== GLOW ===== */
+    .glow {
+        text-shadow: 0 0 10px #00e6c3;
+    }
+
+    /* ===== ANIMATION ===== */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== MOBILE ===== */
+    @@media (max-width: 768px) {
+        .ticket-layout {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+</style>

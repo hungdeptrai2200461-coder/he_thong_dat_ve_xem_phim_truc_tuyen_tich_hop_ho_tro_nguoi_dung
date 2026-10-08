@@ -1,0 +1,79 @@
+﻿@model IEnumerable<MIKUPhim.Models.RAP>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách rạp</h2>
+
+<a href="/Admin/ThemRap" class="btn btn-primary mb-3">
+    + Thêm rạp
+</a>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Mã</th>
+            <th>Tên rạp</th>
+            <th>Tỉnh / Thành</th>
+            <th>Địa chỉ</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var r in Model)
+        {
+            <tr>
+
+                <td>@r.MaRap</td>
+
+                <td>@r.TenRap</td>
+
+                <td>@r.TINHTHANH?.TenTinh</td>
+
+                <td>@r.DiaChi</td>
+
+                <td>
+
+                    <a href="/Admin/SuaRap/@r.MaRap"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/Admin/XoaRap/@r.MaRap"
+                       class="btn btn-danger btn-sm">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+<nav>
+
+    <ul class="pagination justify-content-center">
+
+        @for (int i = 1; i <= ViewBag.TotalPage; i++)
+        {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+
+                <a class="page-link"
+                   href="/Admin/QuanLyRap?page=@i">
+
+                    @i
+
+                </a>
+
+            </li>
+        }
+
+    </ul>
+
+</nav>

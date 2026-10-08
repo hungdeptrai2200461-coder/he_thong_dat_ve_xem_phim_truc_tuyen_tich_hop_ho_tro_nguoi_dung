@@ -1,0 +1,40 @@
+﻿@model MIKUPhim.Models.NGUOIDUNG
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Thông tin cá nhân</h2>
+
+<div class="card mt-3">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-3 text-center">
+
+                <img src="/images/avatars/Avatar cá nhân.jpg"
+                     width="120"
+                     style="border-radius:50%">
+
+            </div>
+            <div class="col-md-9">
+
+                <p><b>Họ tên:</b> @Model.HoTen</p>
+
+                <p><b>Email:</b> @Model.Email</p>
+
+                <p><b>Số điện thoại:</b> @Model.SoDienThoai</p>
+
+                <p><b>Vai trò:</b> @Model.VaiTro</p>
+
+                <p><b>Ngày tạo:</b> @Model.NgayTao.ToString("dd/MM/yyyy")</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,110 @@
+@model List<MIKUPhim.Models.YEUCAUHOTRO>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var trangThai = ViewBag.TrangThai as string;
+    int totalPage = (int)(ViewBag.TotalPage ?? 1);
+    int currentPage = ViewBag.CurrentPage ?? 1;
+}
+
+<h2>Yêu cầu hỗ trợ từ khách hàng</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Bộ lọc theo trạng thái -->
+<div class="mb-3">
+    <a href="/Admin/QuanLyYeuCauHoTro"
+       class="btn btn-sm @(string.IsNullOrEmpty(trangThai) ? "btn-dark" : "btn-outline-dark")">
+        Tất cả
+    </a>
+    <a href="/Admin/QuanLyYeuCauHoTro?trangThai=Moi"
+       class="btn btn-sm @(trangThai == "Moi" ? "btn-info" : "btn-outline-info")">
+        Mới gửi (@ViewBag.SoMoi)
+    </a>
+    <a href="/Admin/QuanLyYeuCauHoTro?trangThai=DangXuLy"
+       class="btn btn-sm @(trangThai == "DangXuLy" ? "btn-warning" : "btn-outline-warning")">
+        Đang xử lý (@ViewBag.SoDangXuLy)
+    </a>
+    <a href="/Admin/QuanLyYeuCauHoTro?trangThai=DaTraLoi"
+       class="btn btn-sm @(trangThai == "DaTraLoi" ? "btn-success" : "btn-outline-success")">
+        Đã trả lời (@ViewBag.SoDaTraLoi)
+    </a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th style="width:60px">Mã</th>
+            <th style="width:18%">Người gửi</th>
+            <th>Tiêu đề</th>
+            <th style="width:140px">Thời điểm gửi</th>
+            <th style="width:120px">Trạng thái</th>
+            <th style="width:160px">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    Không có yêu cầu hỗ trợ nào.
+                </td>
+            </tr>
+        }
+        @foreach (var y in Model)
+        {
+            <tr>
+                <td>#@y.MaYeuCau</td>
+                <td>
+                    <strong>@y.HoTen</strong><br />
+                    <span class="text-muted small">@y.Email</span>
+                </td>
+                <td>@y.TieuDe</td>
+                <td>@y.ThoiDiemGui.ToString("HH:mm dd/MM/yyyy")</td>
+                <td>
+                    @if (y.TrangThai == MIKUPhim.Models.YEUCAUHOTRO.TrangThaiDaTraLoi)
+                    {
+                        <span class="badge bg-success">@y.TenTrangThai</span>
+                    }
+                    else if (y.TrangThai == MIKUPhim.Models.YEUCAUHOTRO.TrangThaiDangXuLy)
+                    {
+                        <span class="badge bg-warning text-dark">@y.TenTrangThai</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-info text-dark">@y.TenTrangThai</span>
+                    }
+                </td>
+                <td>
+                    <a href="/Admin/ChiTietYeuCauHoTro/@y.MaYeuCau" class="btn btn-primary btn-sm">
+                        Xem &amp; trả lời
+                    </a>
+                    <a href="/Admin/XoaYeuCauHoTro/@y.MaYeuCau" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn chắc chắn muốn xóa yêu cầu này?')">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPage > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= totalPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       href="/Admin/QuanLyYeuCauHoTro?trangThai=@trangThai&page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

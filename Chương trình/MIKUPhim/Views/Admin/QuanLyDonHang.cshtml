@@ -1,0 +1,162 @@
+@model IEnumerable<MIKUPhim.Models.DONHANG>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var trangThai = ViewBag.TrangThai as string;
+    int totalPage = (int)(ViewBag.TotalPage ?? 1);
+    int currentPage = ViewBag.CurrentPage ?? 1;
+}
+
+<h2>Quản lý đơn đặt vé</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Bộ lọc theo trạng thái -->
+<div class="mb-3">
+    <a href="/Admin/QuanLyDonHang"
+       class="btn btn-sm @(string.IsNullOrEmpty(trangThai) ? "btn-dark" : "btn-outline-dark")">
+        Tất cả
+    </a>
+    <a href="/Admin/QuanLyDonHang?trangThai=ChuaThanhToan"
+       class="btn btn-sm @(trangThai == "ChuaThanhToan" ? "btn-warning" : "btn-outline-warning")">
+        Chờ xác nhận (@ViewBag.SoChuaThanhToan)
+    </a>
+    <a href="/Admin/QuanLyDonHang?trangThai=DaThanhToan"
+       class="btn btn-sm @(trangThai == "DaThanhToan" ? "btn-success" : "btn-outline-success")">
+        Đã thanh toán (@ViewBag.SoDaThanhToan)
+    </a>
+    <a href="/Admin/QuanLyDonHang?trangThai=Huy"
+       class="btn btn-sm @(trangThai == "Huy" ? "btn-danger" : "btn-outline-danger")">
+        Đã hủy (@ViewBag.SoHuy)
+    </a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+
+    <thead class="table-dark">
+        <tr>
+            <th style="width:80px">Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Phim</th>
+            <th style="width:90px">Phòng</th>
+            <th style="width:120px">Suất chiếu</th>
+            <th style="width:130px">Trạng thái</th>
+            <th style="width:110px">Tổng tiền</th>
+            <th style="width:130px">Ngày đặt</th>
+            <th style="width:220px">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="9" class="text-center text-muted py-4">
+                    Không có đơn hàng nào.
+                </td>
+            </tr>
+        }
+
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>#@d.MaDonHang</td>
+
+                <td>@d.NGUOIDUNG?.HoTen</td>
+
+                <td>@d.SUATCHIEU?.PHIM?.TenPhim</td>
+
+                <td>@d.SUATCHIEU?.PHONGCHIEU?.TenPhong</td>
+
+                <td>
+                    @d.SUATCHIEU?.NgayChieu.ToString("dd/MM/yyyy")
+                    <br />
+                    <span class="text-muted small">
+                        @d.SUATCHIEU?.GioBatDau.ToString(@"hh\:mm")
+                    </span>
+                </td>
+
+                <td>
+                    @if (d.TrangThai == "DaThanhToan")
+                    {
+                        <span class="badge bg-success">Đã thanh toán</span>
+                    }
+                    else if (d.TrangThai == "Huy")
+                    {
+                        <span class="badge bg-danger">Đã hủy</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                    }
+                </td>
+
+                <td>@String.Format("{0:N0}", d.TongTien) đ</td>
+
+                <td>@d.ThoiDiem.ToString("dd/MM/yyyy HH:mm")</td>
+
+                <td>
+                    <a href="/Admin/ChiTietDonHang/@d.MaDonHang"
+                       class="btn btn-info btn-sm mb-1">
+                        Chi tiết
+                    </a>
+
+                    @if (d.TrangThai == "ChuaThanhToan")
+                    {
+                        <a href="/Admin/XacNhanDonHang/@d.MaDonHang?trangThai=@trangThai"
+                           class="btn btn-success btn-sm mb-1"
+                           onclick="return confirm('Xác nhận đơn hàng #@d.MaDonHang đã thanh toán?')">
+                            Xác nhận
+                        </a>
+                    }
+
+                    @if (d.TrangThai != "Huy")
+                    {
+                        <a href="/Admin/HuyDonHang/@d.MaDonHang?trangThai=@trangThai"
+                           class="btn btn-danger btn-sm mb-1"
+                           onclick="return confirm('Hủy đơn hàng #@d.MaDonHang? Toàn bộ ghế của đơn sẽ được hoàn trả.')">
+                            Hủy đơn
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/XacNhanDonHang/@d.MaDonHang?trangThai=@trangThai"
+                           class="btn btn-outline-success btn-sm mb-1"
+                           onclick="return confirm('Khôi phục đơn hàng #@d.MaDonHang về trạng thái đã thanh toán?')">
+                            Khôi phục
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPage > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= totalPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       href="/Admin/QuanLyDonHang?trangThai=@trangThai&page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+<div class="alert alert-secondary mt-3 small mb-0">
+    <strong>Lưu ý nghiệp vụ:</strong>
+    Đơn ở trạng thái <em>Chờ xác nhận</em> là đơn khách đã chọn ghế nhưng chưa thanh toán trực tuyến.
+    Quản trị viên dùng nút <em>Xác nhận</em> cho trường hợp khách thanh toán tại quầy.
+    Khi <em>Hủy đơn</em>, toàn bộ vé thuộc đơn sẽ bị xóa để hoàn trả ghế cho khách khác đặt.
+</div>

@@ -1,0 +1,168 @@
+﻿@model MIKUPhim.Models.PHIM
+@using MIKUPhim.Models
+
+@{
+    var tinhs = ViewBag.Tinh as List<TINHTHANH>;
+    var suats = ViewBag.Suat as List<SUATCHIEU>;
+    DateTime ngayChon = ViewBag.NgayDuocChon ?? DateTime.Today;
+
+    // ====== DANH SÁCH THỨ TIẾNG VIỆT ======
+    string[] thu = {
+        "Chủ nhật",
+        "Thứ 2",
+        "Thứ 3",
+        "Thứ 4",
+        "Thứ 5",
+        "Thứ 6",
+        "Thứ 7"
+    };
+}
+
+<h3>@Model.TenPhim</h3>
+
+<hr />
+
+<!-- ================= CHỌN NGÀY ================= -->
+
+<h5>Chọn ngày</h5>
+
+<div class="date-bar">
+
+    @for (int i = 0; i < 14; i++)
+    {
+        var d = DateTime.Today.AddDays(i);
+
+        var active = d.Date == ngayChon.Date ? "date-active" : "";
+
+        <a asp-controller="Home"
+           asp-action="ChonSuatChieu"
+           asp-route-id="@Model.MaPhim"
+           asp-route-date="@d.ToString("yyyy-MM-dd")"
+           class="date-item @active">
+
+            <div>@thu[(int)d.DayOfWeek]</div>
+            <div>@d.Day</div>
+
+        </a>
+    }
+
+</div>
+
+<hr />
+
+<!-- ================= CHỌN TỈNH ================= -->
+
+<h5>Khu vực</h5>
+
+@foreach (var t in tinhs)
+{
+    <button class="btn btn-dark tinh-btn"
+            onclick="locRap(@t.MaTinh)">
+        @t.TenTinh
+    </button>
+}
+
+<hr />
+
+<!-- ================= DANH SÁCH RẠP ================= -->
+
+<div id="rapContainer">
+
+    @{
+        var grouped = suats
+        .OrderBy(s => s.GioBatDau)
+        .GroupBy(s => s.PHONGCHIEU.RAP.MaRap);
+    }
+
+    @foreach (var rapGroup in grouped)
+    {
+        var rap = rapGroup.First().PHONGCHIEU.RAP;
+
+        <div class="rap-block tinh-@rap.MaTinh mb-4">
+
+            <h5>@rap.TenRap</h5>
+
+            @foreach (var suat in rapGroup)
+            {
+                <a asp-controller="Home"
+                   asp-action="ChonGhe"
+                   asp-route-id="@suat.MaSuatChieu"
+                   class="btn btn-outline-warning suat-btn">
+
+                    @suat.GioBatDau.ToString(@"hh\:mm")
+
+                </a>
+            }
+
+        </div>
+    }
+
+</div>
+
+<!-- ================= SCRIPT LỌC RẠP ================= -->
+
+<script>
+
+    function locRap(maTinh) {
+
+        var all = document.querySelectorAll(".rap-block");
+
+        all.forEach(x => x.style.display = "none");
+
+        var list = document.querySelectorAll(".tinh-" + maTinh);
+
+        list.forEach(x => x.style.display = "block");
+
+    }
+
+</script>
+
+<!-- ================= CSS ================= -->
+
+<style>
+
+    /* ================= THANH CHỌN NGÀY ================= */
+
+    .date-bar {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+    }
+
+    .date-item {
+        border: 1px solid #666;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        color: #ffffff;
+        border-radius: 8px;
+        min-width: 80px;
+        background: #0f1a2e;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .date-item:hover {
+            background: #ffc107;
+            color: #000;
+            border-color: #ffc107;
+        }
+
+    .date-active {
+        background: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+        font-weight: bold;
+    }
+
+    /* ================= NÚT SUẤT CHIẾU ================= */
+
+    .suat-btn {
+        margin: 5px;
+        font-weight: 600;
+    }
+
+</style>

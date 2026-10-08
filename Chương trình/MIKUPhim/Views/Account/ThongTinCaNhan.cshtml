@@ -1,0 +1,192 @@
+﻿@model MIKUPhim.Models.NGUOIDUNG
+
+<div class="profile-container">
+
+    <!-- ALERT -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="profile-card">
+
+        <div class="row">
+
+            <!-- LEFT PANEL -->
+            <div class="col-md-3 profile-left text-center">
+
+                <img src="/images/avatars/@Model.Avatar" class="profile-avatar" />
+
+                <h5 class="mt-3">@Model.HoTen</h5>
+
+                <p class="role">@Model.VaiTro</p>
+
+                <hr />
+
+                <p>🎟 Vé đã mua: <b>@ViewBag.Ve?.Count</b></p>
+
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="col-md-9">
+
+                <ul class="nav nav-tabs custom-tabs">
+
+                    <li class="nav-item">
+                        <button class="nav-link active"
+                                data-bs-toggle="tab"
+                                data-bs-target="#info">
+                            👤 Thông tin
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#edit">
+                            ✏️ Chỉnh sửa
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#password">
+                            🔐 Đổi mật khẩu
+                        </button>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content mt-4">
+
+                    <!-- INFO -->
+                    <div class="tab-pane fade show active" id="info">
+
+                        <div class="info-box">
+
+                            <p><span>Họ tên:</span> @Model.HoTen</p>
+                            <p><span>Email:</span> @Model.Email</p>
+                            <p><span>SĐT:</span> @Model.SoDienThoai</p>
+                            <p><span>Ngày tạo:</span> @Model.NgayTao.ToString("dd/MM/yyyy")</p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- EDIT -->
+                    <div class="tab-pane fade" id="edit">
+
+                        <form asp-action="CapNhatThongTin"
+                              method="post"
+                              enctype="multipart/form-data">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
+
+                            <div class="mb-3">
+                                <label>Họ tên</label>
+                                <input name="HoTen"
+                                       value="@Model.HoTen"
+                                       class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input name="Email"
+                                       value="@Model.Email"
+                                       class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>SĐT</label>
+                                <input name="SoDienThoai"
+                                       value="@Model.SoDienThoai"
+                                       class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Avatar</label>
+                                <input type="file"
+                                       name="Avatar"
+                                       class="form-control"
+                                       onchange="previewAvatar(event)" />
+
+                                <img id="avatarPreview"
+                                     src="~/images/avatars/@Model.Avatar"
+                                     class="avatar-preview" />
+                            </div>
+
+                            <button class="btn-save">Cập nhật</button>
+
+                        </form>
+
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="tab-pane fade" id="password">
+
+                        <form asp-action="DoiMatKhau" method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+                                <label>Mật khẩu cũ <span style="color:#ff6b6b">*</span></label>
+                                <input type="password"
+                                       name="matKhauCu"
+                                       class="form-control"
+                                       required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Mật khẩu mới <span style="color:#ff6b6b">*</span></label>
+                                <input type="password"
+                                       name="matKhauMoi"
+                                       class="form-control"
+                                       minlength="6"
+                                       required />
+                                <div style="color:#9aa7bd;font-size:12.5px;margin-top:4px">
+                                    Ít nhất 6 ký tự, gồm cả chữ và số.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Nhập lại mật khẩu mới <span style="color:#ff6b6b">*</span></label>
+                                <input type="password"
+                                       name="xacNhanMatKhauMoi"
+                                       class="form-control"
+                                       minlength="6"
+                                       required />
+                            </div>
+
+                            <button class="btn-danger btn-change">
+                                Đổi mật khẩu
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    function previewAvatar(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById("avatarPreview").src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>

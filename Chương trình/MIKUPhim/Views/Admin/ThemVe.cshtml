@@ -1,0 +1,100 @@
+﻿@model MIKUPhim.Models.VE
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Thêm vé</h2>
+
+<form method="post">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <label>Phim</label>
+
+            <select id="phim" class="form-control">
+
+                @foreach (var p in ViewBag.Phim)
+                {
+                    <option value="@p.MaPhim">@p.TenPhim</option>
+                }
+
+            </select>
+
+
+            <label class="mt-2">Ngày chiếu</label>
+
+            <input type="date"
+                   name="NgayChieu"
+                   class="form-control" />
+
+
+            <label class="mt-2">Suất chiếu</label>
+
+            <select asp-for="MaSuatChieu" class="form-control">
+
+                @foreach (var s in ViewBag.SuatChieu)
+                {
+                    <option value="@s.MaSuatChieu">
+                        @s.PHIM?.TenPhim - @s.GioBatDau
+                    </option>
+                }
+
+            </select>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <label>Ghế</label>
+
+            <select asp-for="MaGhe" class="form-control">
+
+                @foreach (var g in ViewBag.Ghe)
+                {
+                    <option value="@g.MaGhe">
+                        @g.MaSoGhe
+                    </option>
+                }
+
+            </select>
+
+
+            <label class="mt-2">Combo</label>
+
+            <select name="MaCombo" class="form-control">
+
+                <option value="">Không</option>
+
+                @foreach (var c in ViewBag.Combo)
+                {
+                    <option value="@c.MaCombo">
+                        @c.TenCombo
+                    </option>
+                }
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <button class="btn btn-success">
+
+        Lưu
+
+    </button>
+
+    <a href="/Admin/QuanLyVe"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>

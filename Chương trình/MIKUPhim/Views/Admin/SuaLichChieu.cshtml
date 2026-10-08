@@ -1,0 +1,90 @@
+﻿@model MIKUPhim.Models.LICHCHIEU
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa lịch chiếu</h2>
+
+<form method="post">
+
+    <input type="hidden" asp-for="MaLich" />
+
+    <div class="form-group">
+
+        <label>Phim</label>
+
+        <select asp-for="MaPhim" class="form-control">
+
+            @foreach (var p in ViewBag.Phim)
+            {
+                <option value="@p.MaPhim">
+                    @p.TenPhim
+                </option>
+            }
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Ngày bắt đầu</label>
+
+        <input asp-for="NgayBatDau"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Ngày kết thúc</label>
+
+        <input asp-for="NgayKetThuc"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Trạng thái</label>
+
+        <select asp-for="TrangThai"
+                class="form-control">
+
+            <option value="DangChieu">
+                Đang chiếu
+            </option>
+
+            <option value="SapChieu">
+                Sắp chiếu
+            </option>
+
+            <option value="DaKetThuc">
+                Đã kết thúc
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <br />
+
+    <button class="btn btn-success">
+        Cập nhật
+    </button>
+
+    <a href="/Admin/QuanLyLichChieu"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>

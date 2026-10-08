@@ -1,0 +1,248 @@
+﻿@model List<MIKUPhim.Models.VE>
+
+<div class="container mt-5">
+
+    <h2 class="ticket-title text-center mb-5">
+        🎟 Vé của tôi
+    </h2>
+
+    <div class="row">
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="text-center mt-5">
+                <h4>😢 Bạn chưa có vé nào</h4>
+            </div>
+        }
+        else
+        {
+            // 🔥 GROUP THEO ĐƠN HÀNG
+            var grouped = Model.GroupBy(v => v.MaDonHang);
+
+            foreach (var group in grouped)
+            {
+                var firstVe = group.First();
+
+                var combos = firstVe.DONHANG?.CT_DONHANG_COMBO;
+
+                foreach (var ve in group)
+                {
+                    var ngay = ve.SUATCHIEU?.NgayChieu;
+                    var gioKT = ve.SUATCHIEU?.GioKetThuc;
+
+                    var giaCoBan = ve.SUATCHIEU?.GiaVe ?? 0;
+                    var phuThu = ve.GHE?.PhuThu ?? 0;
+                    var giaVe = giaCoBan + phuThu;
+
+                    <div class="col-lg-4 col-md-6 mb-4">
+
+                        <div class="ticket-card"
+                             data-end="@($"{ngay:yyyy-MM-dd}T{gioKT}")">
+
+                            <!-- Poster -->
+                            <img src="~/images/@(ve.SUATCHIEU?.PHIM?.Poster ?? "noimage.jpg")"
+                                 class="ticket-poster" />
+
+                            <div class="ticket-body">
+
+                                <h5 class="movie-title">
+                                    @(ve.SUATCHIEU?.PHIM?.TenPhim ?? "Phim")
+                                </h5>
+
+                                <span class="status-badge">Đang kiểm tra...</span>
+
+                                <p>📅 @(ngay?.ToString("dd/MM/yyyy") ?? "")</p>
+
+                                <p>🕒 @(ve.SUATCHIEU?.GioBatDau.ToString(@"hh\:mm") ?? "")</p>
+
+                                <p>⏱ Kết thúc: @(gioKT?.ToString(@"hh\:mm") ?? "")</p>
+
+                                <p>
+                                    🎟 Ghế: <strong>@ve.GHE?.MaSoGhe</strong>
+                                    (@ve.GHE?.LoaiGhe)
+                                </p>
+
+                                <p>📍 @(ve.SUATCHIEU?.PHONGCHIEU?.RAP?.TenRap)</p>
+
+                                <!-- 🍿 COMBO (CHỈ HIỂN THỊ Ở VÉ ĐẦU) -->
+                                @if (ve == group.First() && combos != null && combos.Any())
+                                {
+                                    <div class="combo-box">
+                                        <strong>🍿 Combo:</strong>
+                                        @foreach (var c in combos)
+                                        {
+                                            <div>• @c.COMBO.TenCombo x @c.SoLuong</div>
+                                        }
+                                    </div>
+                                }
+
+                                <!-- 💰 GIÁ -->
+                                <div class="price-box">
+                                    <p>🎟 Giá cơ bản: @(giaCoBan.ToString("N0")) đ</p>
+                                    <p>💺 Phụ thu: @(phuThu.ToString("N0")) đ</p>
+                                    <p><strong>👉 Giá vé: @(giaVe.ToString("N0")) đ</strong></p>
+
+                                    @if (ve == group.First() && combos != null && combos.Any())
+                                    {
+                                        var tongCombo = combos.Sum(c => c.SoLuong * c.COMBO.Gia);
+                                        var tongTien = giaVe + tongCombo;
+
+                                        <hr />
+
+                                        <p>🍿 Combo: @(tongCombo.ToString("N0")) đ</p>
+
+                                        <p class="total">
+                                            💰 Tổng: @(tongTien.ToString("N0")) đ
+                                        </p>
+                                    }
+                                </div>
+
+                                <!-- QR -->
+                                <img src="/Home/QrCode/@ve.MaVe" class="qr-code" />
+
+                                <p class="countdown mt-2 fw-bold"></p>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+
+    </div>
+</div>
+
+<style>
+    .ticket-title {
+        font-weight: 700;
+        font-size: 32px;
+        letter-spacing: 2px;
+    }
+
+    .ticket-card {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: 0.3s;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+        .ticket-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+    .ticket-poster {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+
+    .ticket-body {
+        padding: 18px;
+        text-align: center;
+        color: #111;
+    }
+
+    .movie-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .ticket-body p {
+        margin: 6px 0;
+        font-size: 14px;
+    }
+
+    .qr-code {
+        width: 140px;
+        margin-top: 12px;
+        background: white;
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    /* BADGE */
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    /* COMBO */
+    .combo-box {
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 6px;
+        margin-top: 8px;
+        font-size: 13px;
+    }
+
+    /* PRICE */
+    .price-box {
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8fafc;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+        .price-box .total {
+            font-weight: bold;
+            color: #16a34a;
+            font-size: 16px;
+        }
+
+    /* COUNTDOWN */
+    .countdown {
+        font-size: 14px;
+    }
+</style>
+
+<script>
+    function updateCountdown() {
+        document.querySelectorAll(".ticket-card").forEach(card => {
+
+            const endTime = new Date(card.getAttribute("data-end"));
+            const now = new Date();
+            const diff = endTime - now;
+
+            const countdownEl = card.querySelector(".countdown");
+            const badge = card.querySelector(".status-badge");
+
+            if (diff <= 0) {
+                countdownEl.innerText = "⛔ Đã hết hạn";
+                countdownEl.style.color = "gray";
+
+                badge.innerText = "Đã chiếu";
+                badge.style.background = "#64748b";
+                badge.style.color = "white";
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            countdownEl.innerText = `⏳ Còn ${hours}h ${minutes}m`;
+
+            if (diff < 30 * 60 * 1000) {
+                countdownEl.style.color = "red";
+
+                badge.innerText = "Sắp chiếu";
+                badge.style.background = "#ef4444";
+                badge.style.color = "white";
+            } else {
+                countdownEl.style.color = "green";
+
+                badge.innerText = "Đang mở vé";
+                badge.style.background = "#22c55e";
+                badge.style.color = "white";
+            }
+        });
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+</script>

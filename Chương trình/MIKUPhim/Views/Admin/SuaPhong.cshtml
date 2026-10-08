@@ -1,0 +1,59 @@
+﻿@model MIKUPhim.Models.PHONGCHIEU
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa phòng chiếu</h2>
+
+<form asp-action="SuaPhong" method="post">
+
+    <input type="hidden" asp-for="MaPhong" />
+
+    <div class="form-group">
+
+        <label>Tên phòng</label>
+
+        <input asp-for="TenPhong" class="form-control" />
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Rạp</label>
+
+        <select asp-for="MaRap" class="form-control">
+
+            @foreach (var r in ViewBag.Rap)
+            {
+                <option value="@r.MaRap">@r.TenRap</option>
+            }
+
+        </select>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Tổng số ghế</label>
+
+        <input asp-for="TongSoGhe" class="form-control" />
+
+    </div>
+
+    <br>
+
+    <div style="margin-top:15px">
+
+        <button type="submit" class="btn btn-warning">
+            Cập nhật
+        </button>
+
+        <a href="/Admin/QuanLyPhong"
+           class="btn btn-secondary"
+           style="margin-left:10px">
+            Quay lại
+        </a>
+
+    </div>
+</form> 

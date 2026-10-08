@@ -1,0 +1,117 @@
+@model MIKUPhim.Models.DONHANG
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var combos = ViewBag.Combo as List<MIKUPhim.Models.CT_DONHANG_COMBO>
+                 ?? new List<MIKUPhim.Models.CT_DONHANG_COMBO>();
+}
+
+<h2>Chi tiết đơn hàng</h2>
+
+@if (ViewBag.CanhBao != null)
+{
+    <div class="alert alert-warning">@ViewBag.CanhBao</div>
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <h5>Thông tin đơn hàng</h5>
+
+        <p><b>Mã đơn:</b> #@Model.MaDonHang</p>
+
+        <p>
+            <b>Khách hàng:</b>
+            @(Model.NGUOIDUNG?.HoTen ?? "(không còn dữ liệu)")
+        </p>
+
+        <p>
+            <b>Phim:</b>
+            @(Model.SUATCHIEU?.PHIM?.TenPhim ?? "(không còn dữ liệu)")
+        </p>
+
+        <p>
+            <b>Rạp:</b>
+            @(Model.SUATCHIEU?.PHONGCHIEU?.RAP?.TenRap ?? "(không còn dữ liệu)")
+        </p>
+
+        <p>
+            <b>Phòng:</b>
+            @(Model.SUATCHIEU?.PHONGCHIEU?.TenPhong ?? "(không còn dữ liệu)")
+        </p>
+
+        <p>
+            <b>Suất chiếu:</b>
+            @if (Model.SUATCHIEU != null)
+            {
+                @Model.SUATCHIEU.NgayChieu.ToString("dd/MM/yyyy")
+                <text> — </text>
+                @Model.SUATCHIEU.GioBatDau.ToString(@"hh\:mm")
+            }
+            else
+            {
+                <span class="text-muted">(không còn dữ liệu)</span>
+            }
+        </p>
+
+        <p><b>Thời điểm đặt:</b> @Model.ThoiDiem.ToString("HH:mm dd/MM/yyyy")</p>
+
+        <p>
+            <b>Trạng thái:</b>
+            @if (Model.TrangThai == "DaThanhToan")
+            {
+                <span class="badge bg-success">Đã thanh toán</span>
+            }
+            else if (Model.TrangThai == "Huy")
+            {
+                <span class="badge bg-danger">Đã hủy</span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+            }
+        </p>
+
+    </div>
+
+</div>
+
+<hr>
+
+<h4>Combo bắp nước</h4>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Combo</th>
+            <th style="width:140px">Số lượng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (!combos.Any())
+        {
+            <tr>
+                <td colspan="2" class="text-muted">Đơn hàng này không có combo.</td>
+            </tr>
+        }
+
+        @foreach (var c in combos)
+        {
+            <tr>
+                <td>@(c.COMBO?.TenCombo ?? "(không còn dữ liệu)")</td>
+                <td>@c.SoLuong</td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+<h4 class="text-end">
+    Tổng tiền:
+    <span class="text-danger">@String.Format("{0:N0}", Model.TongTien) đ</span>
+</h4>
+
+<a href="/Admin/QuanLyDonHang" class="btn btn-secondary">Quay lại</a>

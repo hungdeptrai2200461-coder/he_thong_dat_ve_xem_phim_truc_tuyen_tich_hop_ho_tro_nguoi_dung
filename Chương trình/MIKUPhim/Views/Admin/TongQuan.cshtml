@@ -1,0 +1,170 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Tổng quan hệ thống</h2>
+
+<!-- 4 ô thống kê -->
+<div style="display:flex;gap:20px;margin-top:20px">
+
+    <div style="flex:1;background:#e8f4ff;padding:20px;border-radius:8px">
+        <h4>Doanh thu hôm nay</h4>
+        <h2>@String.Format("{0:N0}", ViewBag.DoanhThuHomNay) đ</h2>
+    </div>
+
+    <div style="flex:1;background:#e8ffe8;padding:20px;border-radius:8px">
+        <h4>Khách hàng mới</h4>
+        <h2>@ViewBag.KhachMoi</h2>
+    </div>
+
+    <div style="flex:1;background:#fff5e6;padding:20px;border-radius:8px">
+        <h4>Tổng vé bán</h4>
+        <h2>@ViewBag.TongVe</h2>
+    </div>
+
+    <div style="flex:1;background:#ffe8e8;padding:20px;border-radius:8px">
+        <h4>Tổng doanh thu</h4>
+        <h2>@String.Format("{0:N0}", ViewBag.TongDoanhThu) đ</h2>
+    </div>
+
+</div>
+
+
+<!-- 2 BIỂU ĐỒ -->
+<div style="display:flex;gap:30px;margin-top:40px">
+
+    <!-- Biểu đồ doanh thu theo tháng -->
+    <div style="flex:1">
+        <h3>Doanh thu theo tháng</h3>
+        <canvas id="doanhThuChart"></canvas>
+    </div>
+
+    <!-- Biểu đồ vé bán theo phim -->
+    <div style="flex:1">
+        <h3>Vé bán theo phim</h3>
+        <canvas id="vePhimChart"></canvas>
+    </div>
+
+</div>
+
+
+<!-- 2 BẢNG THỐNG KÊ -->
+<div style="display:flex;gap:30px;margin-top:40px">
+
+    <!-- Bảng doanh thu theo phim -->
+    <div style="flex:1">
+
+        <h3>Doanh thu theo phim</h3>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Tên phim</th>
+                    <th>Tổng vé bán</th>
+                    <th>Tổng doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.DoanhThuPhim != null)
+                {
+                    foreach (var p in ViewBag.DoanhThuPhim)
+                    {
+                        <tr>
+                            <td>@p.TenPhim</td>
+                            <td>@p.SoVe</td>
+                            <td>@String.Format("{0:N0}", p.DoanhThu) đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <!-- Bảng doanh thu theo rạp -->
+    <div style="flex:1">
+
+        <h3>Doanh thu theo rạp</h3>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Rạp chiếu</th>
+                    <th>Tổng vé bán</th>
+                    <th>Tổng doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.DoanhThuRap != null)
+                {
+                    foreach (var r in ViewBag.DoanhThuRap)
+                    {
+                        <tr>
+                            <td>@r.TenRap</td>
+                            <td>@r.SoVe</td>
+                            <td>@String.Format("{0:N0}", r.DoanhThu) đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    var thang = @Html.Raw(Json.Serialize(ViewBag.Thang));
+    var doanhThu = @Html.Raw(Json.Serialize(ViewBag.DoanhThuThang));
+
+    var ctx = document.getElementById('doanhThuChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: thang,
+            datasets: [{
+                label: 'Doanh thu',
+                data: doanhThu,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255,0,0,0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+</script>
+
+
+<script>
+
+    var tenPhim = @Html.Raw(Json.Serialize(ViewBag.TenPhim));
+    var soVe = @Html.Raw(Json.Serialize(ViewBag.SoVePhim));
+
+    var ctx2 = document.getElementById('vePhimChart');
+
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: tenPhim,
+            datasets: [{
+                label: 'Số vé',
+                data: soVe,
+                backgroundColor: 'skyblue'
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+</script>

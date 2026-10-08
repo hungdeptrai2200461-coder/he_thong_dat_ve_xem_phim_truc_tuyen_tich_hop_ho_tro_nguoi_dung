@@ -1,0 +1,314 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    int tongGhe = ViewBag.TongGhe ?? 120;
+
+    int cot;
+    int hang;
+
+    if (tongGhe == 300)
+    {
+        cot = 20;   // IMAX
+        hang = 15;
+    }
+    else
+    {
+        cot = 12;   // phòng thường
+        hang = 10;
+    }
+}
+
+<h2>Quản lý ghế</h2>
+
+<div style="margin-bottom:20px">
+
+    <a href="/Admin/QuanLyPhong" class="btn btn-secondary">
+        ← Quay lại
+    </a>
+
+    <a href="/Admin/TaoGheTuDong?maPhong=@ViewBag.MaPhong"
+       class="btn btn-success">
+        Tạo ghế tự động
+    </a>
+
+</div>
+
+<div class="screen">
+    MÀN HÌNH
+</div>
+
+<div class="seat-container">
+
+    @for (int r = 0; r < hang; r++)
+    {
+        char rowChar = (char)('A' + r);
+
+        <div class="seat-row" data-row="@rowChar">
+
+            @for (int c = 1; c <= cot; c++)
+            {
+                string seatCode = rowChar.ToString() + c;
+
+                string color = "seat-normal";
+
+                if ("EFGH".Contains(rowChar))
+                    color = "seat-vip";
+
+                if ("IJ".Contains(rowChar))
+                    color = "seat-couple";
+
+                <div class="seat @color"
+                     onclick="changeSeat(this)"
+                     oncontextmenu="markBroken(event,this)"
+                     data-type="@color">
+
+                    @seatCode
+
+                </div>
+            }
+
+            <div class="row-tools">
+
+                <button onclick="addSeat('@rowChar')"
+                        class="btn btn-success btn-sm">
+                    +
+                </button>
+
+                <button onclick="removeSeat('@rowChar')"
+                        class="btn btn-danger btn-sm">
+                    -
+                </button>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<div class="legend">
+
+    <span class="box seat-normal"></span> Ghế thường
+    <span class="box seat-vip"></span> Ghế VIP
+    <span class="box seat-couple"></span> Ghế đôi
+    <span class="box seat-broken"></span> Ghế hỏng
+
+</div>
+
+<div style="text-align:center;margin-top:20px">
+
+    <button class="btn btn-primary" onclick="saveSeats()">
+        💾 Lưu thay đổi
+    </button>
+
+</div>
+
+
+<style>
+
+    .screen {
+        background: black;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        margin: 20px auto;
+        width: 70%;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    .seat-container {
+        margin-top: 30px;
+    }
+
+    .seat-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    .seat {
+        width: 45px;
+        height: 38px;
+        margin: 4px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .seat:hover {
+            transform: scale(1.1);
+        }
+
+    .seat-normal {
+        background: #7b1fa2;
+    }
+
+    .seat-vip {
+        background: #e53935;
+    }
+
+    .seat-couple {
+        background: #f48fb1;
+    }
+
+    .seat-broken {
+        background: #555;
+    }
+
+    .legend {
+        margin-top: 25px;
+        text-align: center;
+    }
+
+    .box {
+        display: inline-block;
+        width: 25px;
+        height: 20px;
+        margin-left: 20px;
+        border-radius: 5px;
+    }
+
+    .row-tools {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 10px;
+    }
+
+</style>
+
+
+<script>
+
+    function changeSeat(el) {
+
+        let type = el.getAttribute("data-type");
+
+        if (type == "seat-normal") {
+            el.classList.remove("seat-normal");
+            el.classList.add("seat-vip");
+            el.setAttribute("data-type", "seat-vip");
+        }
+
+        else if (type == "seat-vip") {
+            el.classList.remove("seat-vip");
+            el.classList.add("seat-couple");
+            el.setAttribute("data-type", "seat-couple");
+        }
+
+        else {
+            el.classList.remove("seat-couple");
+            el.classList.add("seat-normal");
+            el.setAttribute("data-type", "seat-normal");
+        }
+
+    }
+
+
+    function markBroken(e, seat) {
+
+        e.preventDefault();
+
+        seat.classList.toggle("seat-broken");
+
+    }
+
+
+    function addSeat(row) {
+
+        let rows = document.querySelectorAll(".seat-row");
+
+        rows.forEach(r => {
+
+            if (r.getAttribute("data-row") == row) {
+
+                let seats = r.querySelectorAll(".seat");
+
+                let newIndex = seats.length + 1;
+
+                let newSeat = document.createElement("div");
+
+                newSeat.className = "seat seat-normal";
+
+                newSeat.innerText = row + newIndex;
+
+                newSeat.setAttribute("data-type", "seat-normal");
+
+                newSeat.onclick = function () {
+                    changeSeat(this);
+                };
+
+                r.insertBefore(newSeat, r.querySelector(".row-tools"));
+
+            }
+
+        });
+
+    }
+
+
+    function removeSeat(row) {
+
+        let rows = document.querySelectorAll(".seat-row");
+
+        rows.forEach(r => {
+
+            if (r.getAttribute("data-row") == row) {
+
+                let seats = r.querySelectorAll(".seat");
+
+                if (seats.length > 1) {
+                    seats[seats.length - 1].remove();
+                }
+
+            }
+
+        });
+
+    }
+
+
+    function saveSeats() {
+
+        let seats = document.querySelectorAll(".seat");
+
+        let data = [];
+
+        seats.forEach(s => {
+
+            data.push({
+
+                code: s.innerText,
+                type: s.getAttribute("data-type"),
+                broken: s.classList.contains("seat-broken")
+
+            });
+
+        });
+
+        fetch("/Admin/SaveSeats?maPhong=@ViewBag.MaPhong", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(data)
+
+        })
+            .then(r => r.json())
+            .then(x => {
+
+                alert("Đã lưu ghế thành công");
+
+            });
+
+    }
+
+</script>

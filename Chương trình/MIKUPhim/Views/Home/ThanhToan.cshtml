@@ -1,0 +1,363 @@
+﻿@model MIKUPhim.Models.VE
+
+@{
+    ViewData["Title"] = "Thanh Toán";
+    var suat = ViewBag.Suat;
+    var tenGhe = ViewBag.TenGhe;
+    var tongTien = ViewBag.TongTien ?? 0;
+    var maSuatChieu = ViewBag.MaSuatChieu;
+}
+
+<div class="container mt-5 mb-5 payment-page">
+    @if (TempData["Loi"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["Loi"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <h3 class="page-title">XÁC NHẬN THANH TOÁN</h3>
+
+    <div class="row g-4">
+        <div class="col-lg-5 col-md-12">
+            <div class="movie-info-card">
+                <div class="row g-0">
+                    <div class="col-4 col-md-4">
+                        <img src="~/images/@suat.PHIM.Poster" class="img-fluid rounded-start poster-img" alt="Poster" />
+                    </div>
+                    <div class="col-8 col-md-8">
+                        <div class="card-body">
+                            <h4 class="movie-title">@suat.PHIM.TenPhim</h4>
+                            <div class="info-item">
+                                <span>📍 Rạp:</span> <strong>@suat.PHONGCHIEU.RAP.TenRap</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>🎬 Phòng:</span> <strong>@suat.PHONGCHIEU.TenPhong</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>🕒 Suất:</span>
+                                <strong>@suat.GioBatDau.ToString(@"hh\:mm") - @suat.NgayChieu.ToString("dd/MM/yyyy")</strong>
+                            </div>
+                            <div class="info-item">
+                                <span>🎟 Ghế:</span> <span class="seat-list">@tenGhe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="price-section">
+                    <span>Tổng số tiền:</span>
+                    <h3 class="total-price">@tongTien.ToString("N0") ₫</h3>
+                </div>
+                <div class="timeout-warning">
+                    <i class="fas fa-clock"></i> Giao dịch hết hạn sau: <span id="timer">05:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-12">
+            <div class="payment-box">
+                <h5>Chọn hình thức thanh toán</h5>
+                <form asp-action="ThanhToanOnline" method="post" id="paymentForm">
+                    <input type="hidden" name="tongTien" value="@tongTien" />
+                    <input type="hidden" name="maSuatChieu" value="@maSuatChieu" />
+
+                    <div class="payment-methods-list">
+                        <label class="payment-method-item">
+                            <input type="radio" name="payment" value="VNPAY" checked>
+                            <div class="method-content">
+                                <img src="/images/vnpay.jpg" alt="VNPAY">
+                                <div class="method-text">
+                                    <span class="method-name">Ví điện tử VNPAY</span>
+                                    <span class="method-desc">Thanh toán qua ứng dụng ngân hàng hoặc ví VNPAY</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </label>
+
+                        <label class="payment-method-item">
+                            <input type="radio" name="payment" value="MOMO">
+                            <div class="method-content">
+                                <img src="/images/momo.jpg" alt="MOMO">
+                                <div class="method-text">
+                                    <span class="method-name">Ví điện tử MoMo</span>
+                                    <span class="method-desc">Nhanh chóng, tiện lợi và bảo mật</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </label>
+
+                        <label class="payment-method-item">
+                            <input type="radio" name="payment" value="ZALOPAY">
+                            <div class="method-content">
+                                <img src="/images/zalopay.jpg" alt="ZALOPAY">
+                                <div class="method-text">
+                                    <span class="method-name">Ví ZaloPay</span>
+                                    <span class="method-desc">Thanh toán dễ dàng qua Zalo</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-pay-submit" id="btnPay">
+                        TIẾP TỤC THANH TOÁN
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #0b111e;
+        color: #fff;
+    }
+
+    .payment-page {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        font-weight: 800;
+        margin-bottom: 40px;
+        color: #00e6c3;
+        letter-spacing: 1px;
+    }
+
+    /* Movie Card Left */
+    .movie-info-card {
+        background: #152642;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .poster-img {
+        border-radius: 12px;
+        object-fit: cover;
+        height: 180px;
+        width: 100%;
+    }
+
+    .movie-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 15px;
+    }
+
+    .info-item {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        color: #cbd5e0;
+    }
+
+    .seat-list {
+        color: #00e6c3;
+        font-weight: bold;
+    }
+
+    .divider {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin: 20px 0;
+    }
+
+    .total-price {
+        color: #ff4d4f;
+        font-weight: 800;
+        margin-top: 5px;
+    }
+
+    .timeout-warning {
+        font-size: 0.85rem;
+        color: #ffa940;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    /* Payment Box Right */
+    .payment-box {
+        background: #152642;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid rgba(255,255,255,0.1);
+        height: 100%;
+    }
+
+        .payment-box h5 {
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+    .payment-method-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 20px;
+        border: 2px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .payment-method-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .payment-method-item input {
+            display: none;
+        }
+    /* Ẩn radio mặc định */
+
+    .method-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+        .method-content img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: white;
+            padding: 2px;
+        }
+
+    .method-name {
+        display: block;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .method-desc {
+        font-size: 0.8rem;
+        color: #8a99af;
+    }
+
+    .check-icon {
+        color: transparent;
+        font-size: 1.2rem;
+        transition: 0.3s;
+    }
+
+    /* Trạng thái khi được chọn */
+    .payment-method-item:has(input:checked) {
+        border-color: #00e6c3;
+        background: rgba(0, 230, 195, 0.05);
+    }
+
+        .payment-method-item:has(input:checked) .check-icon {
+            color: #00e6c3;
+        }
+
+    /* Button */
+    .btn-pay-submit {
+        width: 100%;
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #00e6c3, #00bfa6);
+        border: none;
+        color: #0b111e;
+        font-weight: 800;
+        letter-spacing: 1px;
+        transition: transform 0.2s;
+    }
+
+        .btn-pay-submit:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+            color: #000;
+        }
+
+        .btn-pay-submit:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    @@media (max-width: 991px) {
+        .movie-info-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<script>
+    let timeLeft = 300; // 5 phút
+    let isSubmitting = false;
+
+    const timerElement = document.getElementById('timer');
+    const maSuatChieu = "@ViewBag.MaSuatChieu";
+
+    // =========================
+    // 🔥 HÀM HỦY GHẾ
+    // =========================
+    function huyGhe() {
+        if (maSuatChieu && maSuatChieu !== "0") {
+            navigator.sendBeacon("/Home/HuyGhe?maSuatChieu=" + maSuatChieu);
+        }
+    }
+
+    // =========================
+    // 🔥 COUNTDOWN
+    // =========================
+    const countdown = setInterval(function () {
+
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        if (timerElement) {
+            timerElement.innerHTML = `${minutes}:${seconds}`;
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+
+            // 🔥 HỦY GHẾ TRƯỚC KHI REDIRECT
+            huyGhe();
+
+            window.location.href =
+                "/Home/ThanhToanThatBai?maSuatChieu=" + maSuatChieu;
+        }
+
+        timeLeft--;
+
+    }, 1000);
+
+    // =========================
+    // 🔥 SUBMIT FORM
+    // =========================
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function () {
+
+            isSubmitting = true;
+
+            const btn = document.getElementById('btnPay');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "ĐANG CHUYỂN HƯỚNG...";
+            }
+        });
+    });
+
+    // =========================
+    // 🔥 RỜI TRANG (BACK / RELOAD / CLOSE)
+    // =========================
+    window.addEventListener("beforeunload", function () {
+
+        if (!isSubmitting) {
+            huyGhe();
+        }
+    });
+
+</script>

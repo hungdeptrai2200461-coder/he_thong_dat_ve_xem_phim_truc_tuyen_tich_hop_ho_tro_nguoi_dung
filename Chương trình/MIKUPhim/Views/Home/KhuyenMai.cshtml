@@ -1,0 +1,43 @@
+﻿@model List<MIKUPhim.Models.KHUYENMAI>
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">
+
+        TIN MỚI VÀ ƯU ĐÃI
+
+    </h2>
+
+    <div class="row">
+
+        @foreach (var km in Model)
+        {
+
+            <div class="col-md-3 mb-4">
+
+                <a href="/Home/ChiTietKhuyenMai/@km.MaKhuyenMai">
+
+                    <img src="/images/@km.HinhAnh"
+                         class="promo-img">
+
+                </a>
+
+                <p class="mt-2">
+
+                    @km.TieuDe
+
+                </p>
+
+                <p class="text-muted">
+
+                    📅 @km.NgayBatDau.ToString("dd/MM/yyyy")
+
+                </p>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

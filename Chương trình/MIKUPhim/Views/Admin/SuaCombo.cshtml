@@ -1,0 +1,54 @@
+﻿@model MIKUPhim.Models.COMBO
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa Combo</h2>
+
+<form method="post" enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="MaCombo" />
+
+    <label>Tên combo</label>
+
+    <input asp-for="TenCombo"
+           class="form-control" />
+
+    <label class="mt-2">Mô tả</label>
+
+<textarea asp-for="MoTa"
+          class="form-control"></textarea>
+
+    <label class="mt-2">Giá</label>
+
+    <input asp-for="Gia"
+           class="form-control" />
+
+    <label class="mt-2">Hình ảnh</label>
+
+    <input type="file"
+           name="HinhFile"
+           class="form-control" />
+
+    @if (Model.HinhAnh != null)
+    {
+        <img src="/images/@Model.HinhAnh"
+             width="120"
+             class="mt-2">
+    }
+
+    <br>
+
+    <button class="btn btn-success">
+        Cập nhật
+    </button>
+
+    <a href="/Admin/QuanLyCombo"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>

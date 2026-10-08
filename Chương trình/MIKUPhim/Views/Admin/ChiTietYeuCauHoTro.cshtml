@@ -1,0 +1,118 @@
+@model MIKUPhim.Models.YEUCAUHOTRO
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Chi tiết yêu cầu hỗ trợ #@Model.MaYeuCau</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row g-3">
+
+    <!-- Thông tin yêu cầu -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header fw-bold">Thông tin yêu cầu</div>
+            <div class="card-body">
+
+                <table class="table table-sm table-borderless mb-3">
+                    <tr>
+                        <th style="width:150px">Người gửi</th>
+                        <td>@Model.HoTen</td>
+                    </tr>
+                    <tr>
+                        <th>Email liên hệ</th>
+                        <td>@Model.Email</td>
+                    </tr>
+                    <tr>
+                        <th>Tài khoản</th>
+                        <td>
+                            @if (Model.NGUOIDUNG != null)
+                            {
+                                <span>@Model.NGUOIDUNG.HoTen (mã @Model.MaNguoiDung)</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Khách chưa đăng nhập</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Thời điểm gửi</th>
+                        <td>@Model.ThoiDiemGui.ToString("HH:mm:ss dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Trạng thái</th>
+                        <td>
+                            @if (Model.TrangThai == MIKUPhim.Models.YEUCAUHOTRO.TrangThaiDaTraLoi)
+                            {
+                                <span class="badge bg-success">@Model.TenTrangThai</span>
+                            }
+                            else if (Model.TrangThai == MIKUPhim.Models.YEUCAUHOTRO.TrangThaiDangXuLy)
+                            {
+                                <span class="badge bg-warning text-dark">@Model.TenTrangThai</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark">@Model.TenTrangThai</span>
+                            }
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="mb-2 fw-bold">@Model.TieuDe</div>
+
+                <div class="border rounded p-3 bg-light" style="white-space:pre-wrap">@Model.NoiDung</div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Phản hồi -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header fw-bold">Phản hồi của quản trị viên</div>
+            <div class="card-body">
+
+                @if (!string.IsNullOrWhiteSpace(Model.NoiDungTraLoi))
+                {
+                    <div class="alert alert-success" style="white-space:pre-wrap">
+                        @Model.NoiDungTraLoi
+                    </div>
+                    <p class="text-muted small">
+                        Đã trả lời lúc @Model.ThoiDiemTraLoi?.ToString("HH:mm:ss dd/MM/yyyy")
+                    </p>
+                    <hr />
+                    <p class="text-muted small">Bạn có thể chỉnh sửa lại nội dung phản hồi bên dưới.</p>
+                }
+
+                <form asp-action="TraLoiYeuCauHoTro" method="post">
+
+                    <input type="hidden" name="MaYeuCau" value="@Model.MaYeuCau" />
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Nội dung phản hồi <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="NoiDungTraLoi" class="form-control" rows="8"
+                                  maxlength="2000" required
+                                  placeholder="Nhập nội dung phản hồi gửi tới khách hàng...">@Model.NoiDungTraLoi</textarea>
+                        <div class="form-text">Tối đa 2000 ký tự.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Gửi phản hồi</button>
+                    <a href="/Admin/QuanLyYeuCauHoTro" class="btn btn-secondary">Quay lại danh sách</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

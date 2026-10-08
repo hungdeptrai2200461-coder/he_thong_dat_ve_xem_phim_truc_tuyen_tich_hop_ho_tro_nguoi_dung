@@ -1,0 +1,783 @@
+﻿/* ==========================================
+   1. CẤU HÌNH CHUNG & RESPONSIVE (GLOBAL)
+   ========================================== */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+/* Hiệu ứng Focus cho Button và Input */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/* ==========================================
+   2. THÀNH PHẦN MOVIE CARD & SLIDER (PHIM)
+   ========================================== */
+.movie-title {
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.movie-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.movie-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 20px;
+}
+
+    .movie-slider::-webkit-scrollbar {
+        display: none;
+    }
+
+.movie-card {
+    position: relative;
+    min-width: 250px;
+    height: 380px;
+    overflow: hidden;
+}
+
+.movie-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* Lớp phủ khi Hover phim */
+.movie-overlay {
+    position: absolute;
+    top: 0; /* THÊM */
+    left: 0;
+    width: 100%;
+    height: 100%; /* QUAN TRỌNG */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient( to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5), transparent );
+    opacity: 0;
+    transition: 0.3s;
+    padding: 20px;
+}
+
+.movie-card:hover .movie-overlay {
+    opacity: 1;
+}
+
+.play-btn {
+    background: red;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    margin-bottom: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.movie-info h5 {
+    color: white;
+    font-weight: bold;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center; /* THÊM DÒNG NÀY */
+}
+
+/* Nút điều hướng Slider Trái/Phải */
+.slider-btn {
+    position: absolute;
+    background: red;
+    color: white;
+    border: none;
+    font-size: 30px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.left {
+    left: 0;
+}
+
+.right {
+    right: 0;
+}
+
+/* ==========================================
+   3. PROMOTION & TICKET HISTORY
+   ========================================== */
+.promo-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+    .promo-img:hover {
+        transform: scale(1.05);
+    }
+
+.ticket-history {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    color: #111;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+    .ticket-history img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+/* Icon Play giữa thẻ phim */
+.play-icon {
+    position: absolute;
+    top: 50%; /* giữa thật */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* nổi lên trên */
+
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #00e6c3;
+    color: black;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .play-icon:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+/* ==========================================
+   4. TÙY CHỈNH NÚT (BUTTON CUSTOM)
+   ========================================== */
+/* ===== BƯỚC 3: FIX NÚT ===== */
+
+.btn-danger {
+    background: #00c2a8 !important;
+    border: none;
+    color: black;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+.btn-outline-light {
+    background: #00c2a8 !important; /* giống btn-danger */
+    border: none;
+    color: black;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+    .btn-outline-light:hover {
+        background: #00e6c3;
+        color: black;
+    }
+
+/* Ẩn hiện Play Icon khi Hover Card */
+.play-icon {
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.movie-card:hover .play-icon {
+    opacity: 1;
+}
+
+.movie-info {
+    position: absolute;
+    bottom: 15px;
+    left: 15px; /* THÊM */
+    right: 15px; /* THÊM */
+    text-align: left; /* SỬA */
+}
+
+text-align: center; /* (khuyên dùng cho đẹp) */
+.movie-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Nhân vật trang trí góc màn hình */
+.miku-right {
+    position: fixed;
+    right: 10px;
+    bottom: 20px;
+    width: 120px; /* chỉnh to nhỏ */
+    opacity: 0.85;
+    z-index: 5;
+    pointer-events: none; /* không chặn click */
+}
+
+/* ==========================================
+   5. KHUNG SỰ KIỆN & VIDEO BACKGROUND
+   ========================================== */
+/* ===== KHUNG EVENT ===== */
+.event-bg-box {
+    position: relative;
+    width: 80%;
+    margin: 20px auto;
+    padding: 40px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 230, 195, 0.3);
+}
+
+/* ===== VIDEO BACKGROUND ===== */
+.event-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 1; /* 👈 rõ hơn */
+
+    filter: brightness(1) /* 👈 giảm blur + sáng hơn */
+    pointer-events: none; /* 👈 cực quan trọng tránh lỗi click */
+}
+
+/* ===== LỚP PHỦ TỐI ===== */
+.event-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2); /* 👈 sáng hơn */
+    z-index: 2;
+}
+
+/* ==========================================
+   6. SLIDE QUẢNG CÁO & HIỆU ỨNG NEON
+   ========================================== */
+/* ===== SLIDE ===== */
+.promo-slide {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+    .promo-slide.active {
+        opacity: 1;
+        position: relative;
+    }
+
+/* ===== KHUNG BỌC ẢNH ===== */
+.promo-img-wrap {
+    position: relative;
+    display: inline-block;
+    border-radius: 12px;
+}
+
+/* ===== ẢNH ===== */
+.promo-banner {
+    width: 100%;
+    height: 360px;
+    object-fit: contain;
+    border-radius: 12px;
+    display: block;
+}
+
+/* ===== VIỀN NEON CHẠY ===== */
+.promo-slide.active .promo-img-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -4px; /* độ dày viền */
+    border-radius: 14px;
+    background: linear-gradient( 45deg, #00e6c3, #00fff0, #00e6c3, #00bfa6 );
+    background-size: 300% 300%;
+    animation: borderRun 3s linear infinite;
+    z-index: -1;
+    /* glow */
+    filter: blur(8px);
+}
+
+/* ===== VIỀN NÉT BÊN TRONG ===== */
+.promo-slide.active .promo-img-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    border: 2px solid #00e6c3;
+    box-shadow: 0 0 10px #00e6c3, 0 0 25px rgba(0, 230, 195, 0.6);
+}
+
+/* ===== ANIMATION ===== */
+@keyframes borderRun {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 300% 50%;
+    }
+}
+
+/* 🎯 CĂN GIỮA ẢNH SLIDE */
+.promo-slide {
+    display: flex;
+    justify-content: center; /* 👈 QUAN TRỌNG */
+    align-items: center;
+}
+
+/* ==========================================
+   7. BACKGROUND & HẠT TRANG TRÍ (PARTICLES)
+   ========================================== */
+/* ===== BACKGROUND ANIMATION ===== */
+body {
+    background: linear-gradient(-45deg,#020617,#0f172a,#0f1a2e,#152642);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ===== PARTICLES ===== */
+#particles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00e6c3;
+    border-radius: 50%;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(-10vh);
+        opacity: 1;
+    }
+}
+
+/* ==========================================
+   8. GIAO DIỆN LOGIN (ĐĂNG NHẬP)
+   ========================================== */
+/* ===== LAYOUT ===== */
+.login-container {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 900px;
+    display: flex;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(15,23,42,0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* ===== LEFT ===== */
+.login-left {
+    flex: 1;
+    padding: 40px;
+    color: white;
+}
+
+.login-title {
+    text-align: center;
+    color: #00e6c3;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.form-control {
+    background: #020617;
+    border: 1px solid #334155;
+    color: white;
+}
+
+    .form-control:focus {
+        border-color: #00e6c3;
+        box-shadow: 0 0 10px #00e6c3;
+    }
+
+/* PASSWORD */
+.password-box {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 38px;
+    cursor: pointer;
+}
+
+/* BUTTON */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg,#00e6c3,#00bfa6);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+    .btn-login:hover {
+        box-shadow: 0 0 20px #00e6c3;
+    }
+
+/* ===== RIGHT ===== */
+.login-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .login-right video {
+        width: 220px;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0,230,195,0.5);
+    }
+
+    .login-right h4 {
+        color: #00e6c3;
+        margin-top: 10px;
+    }
+
+/* ==========================================
+   9. GIAO DIỆN REGISTER (ĐĂNG KÝ)
+   ========================================== */
+/* ===== FIX HEADER CHE ===== */
+.register-container {
+    padding-top: 110px; /* 🔥 FIX LỖI CHE HEADER */
+    min-height: 100vh;
+}
+
+/* Lặp lại cấu trúc nền (Body & Particles kế thừa bên trên) */
+
+/* ===== TITLE ===== */
+.register-title {
+    text-align: center;
+    color: #00e6c3;
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+/* ===== CARD ===== */
+.register-card {
+    width: 1000px;
+    margin: auto;
+    display: flex;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* ===== LEFT ===== */
+.register-left {
+    flex: 1;
+    padding: 40px;
+    color: white;
+}
+
+/* PASSWORD & INPUT REGISTER */
+.avatar-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #00e6c3;
+    object-fit: cover;
+}
+
+/* BUTTON REGISTER */
+.btn-register {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg,#00e6c3,#00bfa6);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+    .btn-register:hover {
+        box-shadow: 0 0 20px #00e6c3;
+    }
+
+/* ===== RIGHT ===== */
+.register-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .register-right video {
+        width: 260px;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0,230,195,0.5);
+    }
+
+    .register-right h4 {
+        color: #00e6c3;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+/* ==========================================
+   10. GIAO DIỆN PROFILE (THÔNG TIN CÁ NHÂN)
+   ========================================== */
+.profile-container {
+    padding-top: 100px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* CARD */
+.profile-card {
+    background: linear-gradient(145deg,#0f1a2e,#152642);
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* LEFT */
+.profile-left {
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* AVATAR */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #00e6c3;
+    box-shadow: 0 0 20px #00e6c3;
+    object-fit: cover;
+}
+
+/* ROLE */
+.role {
+    color: #00e6c3;
+}
+
+/* TABS */
+.custom-tabs .nav-link {
+    color: #ccc;
+}
+
+    .custom-tabs .nav-link.active {
+        color: #00e6c3;
+        border-bottom: 2px solid #00e6c3;
+    }
+
+/* INFO */
+.info-box p {
+    margin: 10px 0;
+}
+
+.info-box span {
+    color: #00e6c3;
+}
+
+/* BUTTON PROFILE */
+.btn-save {
+    background: linear-gradient(90deg,#00e6c3,#00bfa6);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+    .btn-save:hover {
+        box-shadow: 0 0 20px #00e6c3;
+    }
+
+.btn-change {
+    padding: 10px 20px;
+}
+
+/* AVATAR PREVIEW */
+.avatar-preview {
+    width: 80px;
+    margin-top: 10px;
+    border-radius: 50%;
+}
+
+/* ==========================================
+   🔥 POLICY NEW UI (SIDEBAR FIXED)
+   ========================================== */
+
+.policy-wrapper {
+    display: flex;
+    max-width: 1400px;
+    margin: auto;
+    padding: 100px 20px;
+}
+
+/* ===== SIDEBAR ===== */
+.policy-sidebar {
+    width: 260px;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+    .policy-sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .policy-sidebar li {
+        margin-bottom: 12px;
+    }
+
+    .policy-sidebar a {
+        display: block;
+        padding: 12px 15px;
+        border-radius: 10px;
+        background: #0f1a2e;
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+        font-size: 15px;
+    }
+
+        /* hover */
+        .policy-sidebar a:hover {
+            background: #00e6c3;
+            color: black;
+            box-shadow: 0 0 15px #00e6c3;
+        }
+
+        /* active */
+        .policy-sidebar a.active {
+            background: #00e6c3;
+            color: black;
+            box-shadow: 0 0 15px #00e6c3;
+        }
+
+/* ===== CONTENT ===== */
+.policy-main {
+    flex: 1;
+    margin-left: 40px;
+    background: linear-gradient(145deg,#0f1a2e,#152642);
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+}
+
+/* title */
+.policy-title {
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px #00e6c3;
+}
+
+/* section */
+.policy-section {
+    margin-bottom: 40px;
+    scroll-margin-top: 120px;
+}
+
+    .policy-section h3 {
+        color: #00e6c3;
+        margin-bottom: 10px;
+    }
+
+    /* list */
+    .policy-section ul {
+        padding-left: 20px;
+    }
+
+/* FAQ */
+.faq-item {
+    background: rgba(0,255,200,0.08);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+        
+/* MƯỢT KHI CUỘN */
+html {
+    scroll-behavior: smooth;
+}
+/*kích thước avatar thông tin cá nhân*/
+.profile-avatar {
+    width: 130px; /* to hơn */
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #00e6c3;
+    box-shadow: 0 0 25px rgba(0,230,195,0.6);
+    transform: scale(1.05);
+    transition: 0.3s;
+}

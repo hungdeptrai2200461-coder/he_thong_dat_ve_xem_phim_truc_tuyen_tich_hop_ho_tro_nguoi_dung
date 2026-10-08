@@ -1,0 +1,112 @@
+﻿@model MIKUPhim.Models.VE
+
+<div class="ticket-check-container">
+
+    <h2 class="title">🎬 @Model.SUATCHIEU.PHIM.TenPhim</h2>
+
+    <div class="ticket-box">
+
+        @{
+            var giaCoBan = Model.SUATCHIEU?.GiaVe ?? 0;
+            var phuThu = Model.GHE?.PhuThu ?? 0;
+            var giaVe = giaCoBan + phuThu;
+
+            var tongCombo = Model.VE_COMBO != null
+            ? Model.VE_COMBO.Sum(c => c.SoLuong * c.COMBO.Gia)
+            : 0;
+
+            var tongTien = giaVe + tongCombo;
+        }
+
+        <!-- 📅 Thông tin -->
+        <p>📅 Ngày: @Model.SUATCHIEU.NgayChieu.ToString("dd/MM/yyyy")</p>
+
+        <p>
+            🕒 Giờ:
+            @Model.SUATCHIEU.GioBatDau.ToString(@"hh\:mm")
+            -
+            @Model.SUATCHIEU.GioKetThuc.ToString(@"hh\:mm")
+        </p>
+
+        <!-- 💺 Ghế -->
+        <p>
+            🎟 Ghế: <strong>@Model.GHE.MaSoGhe</strong>
+            (@Model.GHE.LoaiGhe)
+        </p>
+
+        <!-- 📍 Rạp -->
+        <p>📍 Rạp: @Model.SUATCHIEU.PHONGCHIEU.RAP.TenRap</p>
+
+        <!-- 🍿 COMBO -->
+        @if (Model.VE_COMBO != null && Model.VE_COMBO.Any())
+        {
+            <div class="combo-box">
+                <strong>🍿 Combo:</strong>
+                @foreach (var c in Model.VE_COMBO)
+                {
+                    <div>• @c.COMBO.TenCombo x @c.SoLuong</div>
+                }
+            </div>
+        }
+
+        <!-- 💰 GIÁ -->
+        <div class="price-box">
+            <p>🎟 Giá cơ bản: @giaCoBan.ToString("N0")đ</p>
+            <p>💺 Phụ thu ghế: @phuThu.ToString("N0")đ</p>
+            <p><strong>👉 Giá vé: @giaVe.ToString("N0")đ</strong></p>
+
+            <hr />
+
+            <p>🍿 Combo: @tongCombo.ToString("N0")đ</p>
+            <p class="total">💰 Tổng: @tongTien.ToString("N0")đ</p>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .ticket-check-container {
+        max-width: 500px;
+        margin: 30px auto;
+        color: white;
+        text-align: center;
+    }
+
+    .title {
+        margin-bottom: 20px;
+    }
+
+    .ticket-box {
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: left;
+    }
+
+        .ticket-box p {
+            margin: 8px 0;
+        }
+
+    /* COMBO */
+    .combo-box {
+        background: #334155;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    /* PRICE */
+    .price-box {
+        margin-top: 15px;
+        background: #0f172a;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+        .price-box .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #22c55e;
+        }
+</style>

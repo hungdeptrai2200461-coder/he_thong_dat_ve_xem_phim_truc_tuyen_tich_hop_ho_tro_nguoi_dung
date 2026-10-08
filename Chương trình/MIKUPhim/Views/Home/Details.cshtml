@@ -1,0 +1,120 @@
+﻿@model MIKUPhim.Models.PHIM
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Nội Dung Phim</h2>
+    <hr />
+
+    <div class="row">
+
+        <!-- Poster -->
+        <div class="col-md-4">
+            <img src="~/images/@Model.Poster" class="img-fluid rounded shadow" />
+        </div>
+
+        <!-- Thông tin -->
+        <div class="col-md-8">
+            <h3 class="fw-bold">@Model.TenPhim</h3>
+
+            <p><strong>Đạo diễn:</strong> @Model.DaoDien</p>
+            <p><strong>Diễn viên:</strong> @Model.DienVien</p>
+            <p><strong>Thể loại:</strong> @Model.TheLoai</p>
+            <p><strong>Ngôn ngữ:</strong> @Model.NgonNgu</p>
+            <p><strong>Thời lượng:</strong> @Model.ThoiLuong phút</p>
+            <p><strong>Độ tuổi:</strong> @Model.DoTuoi +</p>
+
+            <a asp-action="ChonSuatChieu"
+               asp-route-id="@Model.MaPhim"
+               class="btn btn-danger mt-2">
+                🎟 MUA VÉ
+            </a>
+
+            <br /><br />
+
+            <!-- Thanh đỏ Chi tiết | Trailer -->
+            <div class="tab-bar">
+                <button id="btnDetail"
+                        class="tab-active"
+                        onclick="showDetail()">
+                    Chi tiết
+                </button>
+
+                <button id="btnTrailer"
+                        onclick="showTrailer()">
+                    Trailer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nội dung chi tiết -->
+    <div id="detailSection" class="mt-4">
+        <p>@Model.MoTa</p>
+    </div>
+
+    <!-- Trailer -->
+    <div id="trailerSection" class="mt-4" style="display:none;">
+        <iframe width="100%"
+                height="500"
+                id="trailerFrame"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>
+    </div>
+
+</div>
+
+<style>
+    .tab-bar {
+        background: #d8232a;
+        padding: 10px;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+        .tab-bar button {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    .tab-active {
+        border-bottom: 3px solid white;
+    }
+</style>
+
+<script>
+    function showDetail() {
+        document.getElementById("detailSection").style.display = "block";
+        document.getElementById("trailerSection").style.display = "none";
+        document.getElementById("trailerFrame").src = "";
+
+        document.getElementById("btnDetail").classList.add("tab-active");
+        document.getElementById("btnTrailer").classList.remove("tab-active");
+    }
+
+    function showTrailer() {
+
+        var url = "@Model.TrailerUrl";
+
+        if (url.includes("watch?v=")) {
+            url = url.replace("watch?v=", "embed/");
+        }
+
+        if (url.includes("youtu.be")) {
+            var id = url.split("/").pop();
+            url = "https://www.youtube.com/embed/" + id;
+        }
+
+        document.getElementById("detailSection").style.display = "none";
+        document.getElementById("trailerSection").style.display = "block";
+        document.getElementById("trailerFrame").src = url + "?autoplay=1";
+
+        document.getElementById("btnTrailer").classList.add("tab-active");
+        document.getElementById("btnDetail").classList.remove("tab-active");
+    }
+</script>

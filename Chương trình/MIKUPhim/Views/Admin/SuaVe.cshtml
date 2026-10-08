@@ -1,0 +1,65 @@
+﻿@model MIKUPhim.Models.VE
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa vé</h2>
+
+<form method="post">
+
+    <input type="hidden" asp-for="MaVe" />
+
+    <label>Suất chiếu</label>
+
+    <select asp-for="MaSuatChieu" class="form-control">
+
+        @foreach (var s in ViewBag.SuatChieu)
+        {
+            <option value="@s.MaSuatChieu">
+                @s.PHIM?.TenPhim - @s.GioBatDau
+            </option>
+        }
+
+    </select>
+
+
+    <label class="mt-2">Ghế</label>
+
+    <select asp-for="MaGhe" class="form-control">
+
+        @foreach (var g in ViewBag.Ghe)
+        {
+            <option value="@g.MaGhe">
+                @g.MaSoGhe
+            </option>
+        }
+
+    </select>
+
+
+    <label class="mt-2">Trạng thái</label>
+
+    <select asp-for="TrangThai" class="form-control">
+
+        <option value="0">Chưa sử dụng</option>
+        <option value="1">Đã sử dụng</option>
+
+    </select>
+
+    <br>
+
+    <button class="btn btn-success">
+
+        Cập nhật
+
+    </button>
+
+    <a href="/Admin/QuanLyVe"
+       class="btn btn-secondary">
+
+        Quay lại
+
+    </a>
+
+</form>

@@ -1,0 +1,735 @@
+﻿@model List<MIKUPhim.Models.PHIM>
+
+@{
+    var km = ViewBag.KhuyenMai as List<MIKUPhim.Models.KHUYENMAI>;
+}
+
+<!-- SLIDER QUẢNG CÁO -->
+@if (km != null && km.Count > 0)
+{
+    <!-- EVENT TITLE (KHÔNG BỊ ẢNH NỀN) -->
+    <div class="event-section">
+        <span class="line"></span>
+        <h2 class="event-text">EVENT</h2>
+        <span class="line"></span>
+    </div>
+
+    <!-- KHUNG CHỨA VIDEO + SLIDER -->
+    <div class="event-bg-box">
+
+        <!-- VIDEO BACKGROUND -->
+        <video class="event-bg-video" autoplay muted loop playsinline>
+            <source src="~/images/gifmiku.mp4" type="video/mp4">
+        </video>
+
+        <!-- LỚP PHỦ TỐI -->
+        <div class="event-overlay"></div>
+
+        <!-- SLIDER -->
+        <div class="promo-container" id="promoContainer">
+
+            <div class="promo-slider">
+
+                @for (int i = 0; i < km.Count; i++)
+                {
+                    <div class="promo-slide fade">
+
+                        <a href="/Home/ChiTietKhuyenMai/@km[i].MaKhuyenMai">
+
+                            <div class="promo-img-wrap">
+                                <img src="~/images/@km[i].HinhAnh" class="promo-banner">
+                            </div>
+
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+            <!-- NÚT -->
+            <button class="promo-prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="promo-next" onclick="changeSlide(1)">&#10095;</button>
+
+            <!-- DOTS -->
+            <div class="promo-dots">
+
+                @for (int i = 0; i < km.Count; i++)
+                {
+                    <span class="promo-dot" onclick="currentSlide(@(i+1))"></span>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+}
+<!-- MOVIE TITLE -->
+<div class="event-section">
+    <span class="line"></span>
+    <h2 class="movie-text">MOVIE SELECTION</h2>
+    <span class="line"></span>
+</div>
+
+@{
+    var dsTheLoai = ViewBag.DanhSachTheLoai as List<string> ?? new List<string>();
+    var tuKhoa = ViewBag.TuKhoa as string;
+    var theLoaiChon = ViewBag.TheLoai as string;
+    var trangThaiChon = ViewBag.TrangThai as string;
+    bool dangTimKiem = ViewBag.DangTimKiem != null && (bool)ViewBag.DangTimKiem;
+}
+
+<!-- ===================== TÌM KIẾM PHIM ===================== -->
+<div class="search-wrapper">
+
+    <form method="get" asp-action="Index" class="search-form">
+
+        <input type="text" name="tuKhoa" value="@tuKhoa" class="search-input"
+               placeholder="Tìm theo tên phim, thể loại, đạo diễn, diễn viên..." />
+
+        <select name="theLoai" class="search-select">
+            <option value="">Tất cả thể loại</option>
+            @foreach (var tl in dsTheLoai)
+            {
+                if (tl == theLoaiChon)
+                {
+                    <option value="@tl" selected>@tl</option>
+                }
+                else
+                {
+                    <option value="@tl">@tl</option>
+                }
+            }
+        </select>
+
+        <select name="trangThai" class="search-select">
+            <option value="">Tất cả trạng thái</option>
+            <option value="dang_chieu" selected="@(trangThaiChon == "dang_chieu")">Đang chiếu</option>
+            <option value="sap_chieu" selected="@(trangThaiChon == "sap_chieu")">Sắp chiếu</option>
+        </select>
+
+        <button type="submit" class="search-btn">Tìm kiếm</button>
+
+        @if (dangTimKiem)
+        {
+            <a asp-action="Index" class="search-reset">Xóa lọc</a>
+        }
+    </form>
+
+    @if (dangTimKiem)
+    {
+        <p class="search-result-text">
+            Tìm thấy <strong>@ViewBag.SoKetQua</strong> phim
+            @if (!string.IsNullOrWhiteSpace(tuKhoa))
+            {
+                <text>cho từ khóa "<strong>@tuKhoa</strong>"</text>
+            }
+        </p>
+    }
+</div>
+
+@if (dangTimKiem && Model.Count == 0)
+{
+    <div class="no-result">
+        <p>Không tìm thấy phim nào phù hợp.</p>
+        <a asp-action="Index" class="search-btn">Xem tất cả phim</a>
+    </div>
+}
+
+<div class="movie-wrapper @(dangTimKiem ? "is-grid" : "")">
+
+    @if (!dangTimKiem)
+    {
+        <button class="slider-btn left" onclick="scrollMovies(-1)">
+            &#10094;
+        </button>
+    }
+
+    <div class="movie-slider @(dangTimKiem ? "grid-mode" : "")" id="movieSlider">
+
+        @foreach (var phim in Model)
+        {
+            <div class="movie-card">
+
+                <!-- Ảnh phim -->
+                <img src="~/images/@phim.Poster" class="movie-img" />
+
+                <!-- NÚT PLAY (TÁCH RIÊNG - QUAN TRỌNG) -->
+                <div class="play-icon"
+                     onclick="openTrailer('@phim.TrailerUrl'); return false;">
+                    ▶
+                </div>
+
+                <!-- OVERLAY (CHỈ CHỨA PHẦN DƯỚI) -->
+                <div class="movie-overlay">
+
+                    <div class="movie-info">
+
+                        <!-- Tên phim -->
+                        <h5>@phim.TenPhim</h5>
+
+                        <!-- Nút -->
+                        <div class="btn-group">
+
+                            <a asp-action="Details"
+                               asp-route-id="@phim.MaPhim"
+                               class="btn btn-danger">
+                                XEM CHI TIẾT
+                            </a>
+
+                            <a asp-action="ChonSuatChieu"
+                               asp-route-id="@phim.MaPhim"
+                               class="btn btn-outline-light">
+                                MUA VÉ
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    @if (!dangTimKiem)
+    {
+        <button class="slider-btn right" onclick="scrollMovies(1)">
+            &#10095;
+        </button>
+    }
+
+</div>
+
+<!-- CSS cho phần tìm kiếm -->
+<style>
+    .search-wrapper {
+        max-width: 1100px;
+        margin: 0 auto 26px;
+        padding: 0 20px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .search-input {
+        flex: 1 1 320px;
+        min-width: 240px;
+        padding: 11px 16px;
+        border-radius: 8px;
+        border: 1px solid #2a3a5e;
+        background: #16213e;
+        color: #e8ecf5;
+        font-size: 15px;
+    }
+
+        .search-input::placeholder {
+            color: #7c8aa5;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #00d1ff;
+            box-shadow: 0 0 0 3px rgba(0, 209, 255, .15);
+        }
+
+    .search-select {
+        padding: 11px 14px;
+        border-radius: 8px;
+        border: 1px solid #2a3a5e;
+        background: #16213e;
+        color: #e8ecf5;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+        .search-select:focus {
+            outline: none;
+            border-color: #00d1ff;
+        }
+
+    .search-btn {
+        padding: 11px 26px;
+        border-radius: 8px;
+        border: none;
+        background: #00d1ff;
+        color: #0d1b2a;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .search-btn:hover {
+            background: #00b4dd;
+            color: #0d1b2a;
+        }
+
+    .search-reset {
+        padding: 11px 20px;
+        border-radius: 8px;
+        border: 1px solid #6c7a92;
+        color: #c9d4e8;
+        text-decoration: none;
+        font-size: 15px;
+    }
+
+        .search-reset:hover {
+            background: #2a3a5e;
+            color: #fff;
+        }
+
+    .search-result-text {
+        text-align: center;
+        color: #c9d4e8;
+        margin-top: 14px;
+        margin-bottom: 0;
+    }
+
+    .no-result {
+        text-align: center;
+        color: #c9d4e8;
+        padding: 40px 20px;
+    }
+
+        .no-result p {
+            font-size: 17px;
+            margin-bottom: 16px;
+        }
+
+    /* Khi đang tìm kiếm: hiển thị dạng lưới thay vì trượt ngang */
+    .movie-wrapper.is-grid {
+        padding: 0 20px;
+    }
+
+    .movie-slider.grid-mode {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        overflow-x: visible;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+</style>
+
+<!-- TRAILER MODAL -->
+<div id="trailerModal" class="trailer-modal">
+    <div class="trailer-content">
+        <span class="close-btn" onclick="closeTrailer()">&times;</span>
+        <iframe id="trailerFrame"
+                width="100%"
+                height="450"
+                src=""
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>
+    </div>
+</div>
+
+<script>
+function scrollMovies(direction) {
+    const slider = document.getElementById("movieSlider");
+    const scrollAmount = 300;
+    slider.scrollLeft += direction * scrollAmount;
+}
+</script>
+
+<script>
+function openTrailer(url) {
+
+    if (url.includes("youtu.be")) {
+        var videoId = url.split("/").pop();
+        url = "https://www.youtube.com/embed/" + videoId;
+    }
+
+    if (url.includes("watch?v=")) {
+        url = url.replace("watch?v=", "embed/");
+    }
+
+    document.getElementById("trailerFrame").src = url + "?autoplay=1";
+    document.getElementById("trailerModal").style.display = "block";
+}
+
+function closeTrailer() {
+    document.getElementById("trailerFrame").src = "";
+    document.getElementById("trailerModal").style.display = "none";
+}
+
+window.onclick = function (event) {
+    var modal = document.getElementById("trailerModal");
+    if (event.target == modal) {
+        closeTrailer();
+    }
+}
+</script>
+
+<!-- JS SLIDER -->
+<script>
+
+    let slideIndex = 0;
+    let slides = document.querySelectorAll(".promo-slide");
+    let dots = document.querySelectorAll(".promo-dot");
+    let autoSlide;
+
+    function showSlide(index) {
+
+        slides.forEach((s, i) => {
+
+            s.classList.remove("active");
+            dots[i].classList.remove("active-dot");
+
+        });
+
+        slides[index].classList.add("active");
+        dots[index].classList.add("active-dot");
+
+    }
+
+    function nextSlide() {
+
+        slideIndex++;
+
+        if (slideIndex >= slides.length)
+            slideIndex = 0;
+
+        showSlide(slideIndex);
+
+    }
+
+    function changeSlide(n) {
+
+        slideIndex += n;
+
+        if (slideIndex >= slides.length)
+            slideIndex = 0;
+
+        if (slideIndex < 0)
+            slideIndex = slides.length - 1;
+
+        showSlide(slideIndex);
+
+    }
+
+    function currentSlide(n) {
+
+        slideIndex = n - 1;
+        showSlide(slideIndex);
+
+    }
+
+    function startAuto() {
+
+        autoSlide = setInterval(nextSlide, 3000);
+
+    }
+
+    function stopAuto() {
+
+        clearInterval(autoSlide);
+
+    }
+
+    startAuto();
+
+    document.getElementById("promoContainer").addEventListener("mouseover", stopAuto);
+
+    document.getElementById("promoContainer").addEventListener("mouseout", startAuto);
+
+    showSlide(slideIndex);
+
+</script>
+
+<style>
+
+    /* SLIDER */
+
+    .promo-container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 20px auto;
+        position: relative; /* 👈 QUAN TRỌNG */
+        z-index: 3; /* 👈 QUAN TRỌNG */
+
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0, 230, 195, 0.2);
+    }
+
+    .promo-slide {
+        position: absolute;
+        width: 100%;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+
+        .promo-slide.active {
+            opacity: 1;
+            position: relative;
+        }
+
+    .promo-banner {
+        width: 100%;
+        height: 360px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: transparent;
+    }
+
+    .fade {
+        animation: fadeEffect 1s;
+    }
+
+    @@keyframes fadeEffect {
+        from {
+            opacity: 0.4
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .promo-prev,
+    .promo-next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        padding: 12px;
+        color: white;
+        font-size: 28px;
+        background: rgba(0,0,0,0.5);
+        border: none;
+    }
+
+    .promo-prev {
+        left: 10px;
+    }
+
+    .promo-next {
+        right: 10px;
+    }
+
+    .promo-dots {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .promo-dot {
+        height: 12px;
+        width: 12px;
+        margin: 4px;
+        background: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .active-dot {
+        background: #e50914;
+    }
+
+/* TRAILER */
+
+.trailer-modal {
+display:none;
+position:fixed;
+z-index:9999;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+}
+
+.trailer-content {
+position:relative;
+width:70%;
+margin:5% auto;
+background:black;
+padding:10px;
+}
+
+.close-btn {
+position:absolute;
+top:-10px;
+right:-10px;
+background:white;
+color:black;
+font-size:24px;
+font-weight:bold;
+width:35px;
+height:35px;
+border-radius:50%;
+text-align:center;
+line-height:35px;
+cursor:pointer;
+}
+
+    .event-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        margin: 40px auto;
+    }
+
+    .event-text {
+        position: relative;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 6px;
+        margin: 0 20px;
+        color: #00e6c3;
+        text-transform: uppercase;
+        text-shadow: 0 0 5px #00e6c3, 0 0 10px #00c2a8;
+    }
+
+        .event-text::after {
+            content: "EVENT";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: transparent;
+            background: linear-gradient( 120deg, transparent, rgba(255,255,255,0.9), transparent );
+            background-size: 200%;
+            -webkit-background-clip: text;
+            animation: shine 3s infinite;
+        }
+
+    /* Razor nhớ @@ */
+    @@keyframes shine {
+        0% {
+            background-position: -200%;
+        }
+
+        100% {
+            background-position: 200%;
+        }
+    }
+
+    .line {
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #00e6c3, transparent);
+    }
+    /* MOVIE SELECTION */
+
+    .movie-text {
+        position: relative;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 6px;
+        margin: 0 20px;
+        color: #00e6c3;
+        text-transform: uppercase;
+        text-shadow: 0 0 5px #00e6c3, 0 0 10px #00c2a8;
+    }
+
+        /* hiệu ứng shine giống EVENT */
+        .movie-text::after {
+            content: "MOVIE SELECTION";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: transparent;
+            background: linear-gradient( 120deg, transparent, rgba(255,255,255,0.9), transparent );
+            background-size: 200%;
+            -webkit-background-clip: text;
+            animation: shine 3s infinite;
+        }
+    /* ===== SPARKLE EFFECT ===== */
+
+    .event-text, .movie-text {
+        animation: glowPulse 2s infinite alternate;
+    }
+
+    /* nhịp glow */
+    @@keyframes glowPulse {
+        0% {
+            text-shadow: 0 0 5px #00e6c3, 0 0 10px #00c2a8;
+        }
+
+        100% {
+            text-shadow: 0 0 15px #00e6c3, 0 0 30px #00e6c3, 0 0 50px #00e6c3;
+        }
+    }
+
+    /* ===== SPARKLE DOTS ===== */
+
+    .event-text::before,
+    .movie-text::before {
+        content: "✦ ✧ ✦";
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: #00e6c3;
+        opacity: 0.8;
+        animation: sparkleMove 3s infinite linear;
+    }
+
+    /* sparkle chạy */
+    @@keyframes sparkleMove {
+        0% {
+            transform: translateX(-50%) translateY(0);
+            opacity: 0;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateX(-50%) translateY(-10px);
+            opacity: 0;
+        }
+    }
+
+    /* ===== LINE CHẠY ===== */
+
+    .line {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .line::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, #00e6c3, transparent);
+            animation: lineMove 2s infinite linear;
+        }
+
+    /* line chạy */
+    @@keyframes lineMove {
+        0% {
+            left: -100px;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+
+    /* ===== HOVER XỊN ===== */
+
+    .event-text:hover,
+    .movie-text:hover {
+        transform: scale(1.1) rotate(-1deg);
+        transition: 0.3s;
+    }
+
+</style>

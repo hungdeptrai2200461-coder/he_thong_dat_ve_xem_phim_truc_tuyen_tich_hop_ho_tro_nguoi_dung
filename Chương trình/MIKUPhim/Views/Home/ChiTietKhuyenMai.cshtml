@@ -1,0 +1,42 @@
+﻿@model MIKUPhim.Models.KHUYENMAI
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+
+        @Model.TieuDe
+
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <img src="/images/@Model.HinhAnh"
+                 class="img-fluid rounded">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <p style="white-space:pre-line">
+
+                @Model.MoTa
+
+            </p>
+
+            <p>
+
+                <strong>Thời gian:</strong>
+
+                @Model.NgayBatDau.ToString("dd/MM/yyyy")
+                -
+                @Model.NgayKetThuc.ToString("dd/MM/yyyy")
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

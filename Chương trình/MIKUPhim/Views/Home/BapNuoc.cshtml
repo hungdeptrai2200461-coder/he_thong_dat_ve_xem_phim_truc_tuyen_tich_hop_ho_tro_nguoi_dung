@@ -1,0 +1,439 @@
+﻿@model List<MIKUPhim.Models.COMBO>
+@using MIKUPhim.Models
+
+@{
+    var suatData = ViewBag.Suat as SUATCHIEU;
+
+    int gheCon = ViewBag.GheCon ?? 0;
+    int tongGhe = ViewBag.TongGhe ?? 0;
+    int maSuatChieu = ViewBag.MaSuatChieu ?? 0;
+
+    decimal tongTienVe = ViewBag.TongTienVe ?? 0;
+    int soGhe = ViewBag.SoGhe ?? 0;
+}
+
+<!-- ================= HEADER ================= -->
+
+<div class="booking-header">
+    <div>
+        <h5>
+            @suatData?.PHONGCHIEU?.RAP?.TenRap |
+            @suatData?.PHONGCHIEU?.TenPhong |
+            Số ghế (@gheCon/@tongGhe)
+        </h5>
+
+        <p>
+            @suatData?.NgayChieu.ToString("dd/MM/yyyy")
+            @suatData?.GioBatDau.ToString(@"hh\:mm")
+            ~
+            @suatData?.GioKetThuc.ToString(@"hh\:mm")
+        </p>
+    </div>
+
+    <div class="countdown-box">
+        <div>Countdown</div>
+        <div id="timer">05:00</div>
+    </div>
+</div>
+
+<!-- ================= BẮP NƯỚC ================= -->
+
+<div class="container mt-4">
+
+    <h3 class="text-center mb-4">Bắp Nước</h3>
+
+    <form asp-action="LuuCombo" method="post">
+
+        <input type="hidden" name="maSuatChieu" value="@maSuatChieu" />
+
+        <div class="row">
+
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="combo-card">
+
+                        <img src="~/images/@Model[i].HinhAnh"
+                             class="combo-img" />
+
+                        <h5>@Model[i].TenCombo</h5>
+                        <p class="text-muted">@Model[i].MoTa</p>
+
+                        <p class="price">
+                            Giá: @Model[i].Gia.ToString("N0") ₫
+                        </p>
+
+                        <input type="hidden" name="maCombo" value="@Model[i].MaCombo" />
+
+                        <div class="quantity-box">
+                            <button type="button" onclick="giam(@i)">-</button>
+
+                            <input type="number"
+                                   id="qty_@i"
+                                   name="soLuong[@i]"
+                                   value="0"
+                                   min="0" />
+
+                            <button type="button" onclick="tang(@i)">+</button>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <!-- ================= FOOTER BAR ================= -->
+
+        <div class="bottom-bar">
+
+            <div class="bottom-left">
+
+                <img src="~/images/@suatData?.PHIM?.Poster"
+                     class="poster-small" />
+
+                <div>
+                    <b>@suatData?.PHIM?.TenPhim</b>
+
+                    <p>Rạp: @suatData?.PHONGCHIEU?.RAP?.TenRap</p>
+
+                    <p>
+                        Suất chiếu:
+                        @suatData?.GioBatDau.ToString(@"hh\:mm"),
+                        @suatData?.NgayChieu.ToString("dd/MM/yyyy")
+                    </p>
+
+                    <p>
+                        Số ghế: @soGhe
+                        (@ViewBag.TenGhe)
+                    </p>
+                </div>
+            </div>
+
+            <div class="bottom-right">
+
+                <p>
+                    Giá vé:
+                    <span id="ticketTotal">
+                        @tongTienVe.ToString("N0") ₫
+                    </span>
+                </p>
+
+                <p>
+                    Combo:
+                    <span id="comboTotal">0 ₫</span>
+                </p>
+
+                <h5>
+                    Tổng:
+                    <span id="grandTotal">
+                        @tongTienVe.ToString("N0") ₫
+                    </span>
+                </h5>
+
+                <div class="btn-group mt-2">
+                    <a href="/Home/ChonGhe/@maSuatChieu"
+                       class="btn btn-secondary">
+                        ◀ PREVIOUS
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-danger">
+                        NEXT ▶
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+    const prices = [
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        @Model[i].Gia @(i < Model.Count - 1 ? "," : "")
+    }
+        ];
+
+    const ticketTotal = @tongTienVe;
+
+    function tang(i) {
+        let input = document.getElementById("qty_" + i);
+        input.value = parseInt(input.value) + 1;
+        updateTotal();
+    }
+
+    function giam(i) {
+        let input = document.getElementById("qty_" + i);
+        if (input.value > 0)
+            input.value = parseInt(input.value) - 1;
+        updateTotal();
+    }
+
+    function updateTotal() {
+
+        let comboTotal = 0;
+
+        for (let i = 0; i < prices.length; i++) {
+            let qty = parseInt(document.getElementById("qty_" + i).value) || 0;
+            comboTotal += qty * prices[i];
+        }
+
+        document.getElementById("comboTotal").innerText =
+            comboTotal.toLocaleString("vi-VN") + " ₫";
+
+        document.getElementById("grandTotal").innerText =
+            (ticketTotal + comboTotal).toLocaleString("vi-VN") + " ₫";
+    }
+
+    // ===== Countdown 5 phút =====
+
+    let time = 300;
+
+    let countdown = setInterval(function () {
+
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+
+        document.getElementById("timer").innerHTML =
+            minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+
+        time--;
+
+        if (time < 0) {
+            clearInterval(countdown);
+            alert("Hết thời gian! Thanh toán thất bại.");
+            window.location.href = "/Home/Index";
+        }
+
+    }, 1000);
+
+</script>
+<script>
+    let isSubmitting = false;
+
+    // khi bấm submit → KHÔNG hủy ghế
+    document.querySelectorAll("form").forEach(f => {
+        f.addEventListener("submit", function () {
+            isSubmitting = true;
+        });
+    });
+
+    // chỉ hủy khi THOÁT THẬT
+    window.addEventListener("beforeunload", function () {
+        if (!isSubmitting) {
+            navigator.sendBeacon("/Home/HuyGhe?maSuatChieu=@ViewBag.MaSuatChieu");
+        }
+    });
+</script>
+<!-- ================= STYLE ================= -->
+
+<style>
+
+    /* ================= HEADER ================= */
+
+    .booking-header {
+        background: linear-gradient(90deg,#0f1a2e,#1f7a4c);
+        padding: 18px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        color: white;
+        font-weight: 600;
+    }
+
+        .booking-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .booking-header p {
+            margin: 3px 0 0 0;
+            opacity: 0.85;
+        }
+
+    /* ================= COUNTDOWN ================= */
+
+    .countdown-box {
+        text-align: center;
+    }
+
+    #timer {
+        font-size: 22px;
+        background: #ff4d4f;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    }
+
+    /* ================= COMBO CARD ================= */
+
+    .combo-card {
+        background: linear-gradient(145deg,#0f1a2e,#152642);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: 0.3s;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: white;
+    }
+
+        .combo-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        /* ảnh combo */
+
+        .combo-card img {
+            width: 180px;
+            height: 140px;
+            object-fit: contain;
+        }
+
+    .combo-img {
+        height: 150px;
+        object-fit: contain;
+        display: block;
+        margin: auto;
+    }
+
+    /* tên combo */
+
+    .combo-name {
+        color: white;
+        font-weight: 600;
+        margin-top: 12px;
+        font-size: 18px;
+    }
+
+    /* giá */
+
+    .combo-price {
+        color: #1ed760;
+        font-weight: 700;
+        margin-top: 5px;
+        font-size: 18px;
+    }
+
+    .price {
+        font-weight: bold;
+    }
+
+    /* ================= QUANTITY ================= */
+
+    .quantity-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+        .quantity-box button {
+            width: 35px;
+            height: 35px;
+            background: #1ed760;
+            color: black;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+            .quantity-box button:hover {
+                background: #18c95c;
+            }
+
+        .quantity-box input {
+            width: 60px;
+            text-align: center;
+            border-radius: 6px;
+            border: none;
+            height: 35px;
+        }
+
+    /* ================= BOTTOM BAR ================= */
+
+    .bottom-bar {
+        background: linear-gradient(90deg,#0f1a2e,#152642);
+        color: white;
+        padding: 20px 25px;
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 10px;
+    }
+
+    /* poster */
+
+    .poster-small {
+        width: 70px;
+        margin-right: 15px;
+        border-radius: 6px;
+    }
+
+    /* left info */
+
+    .bottom-left {
+        display: flex;
+        align-items: center;
+    }
+
+        .bottom-left h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .bottom-left p {
+            margin: 2px 0;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+    /* button group */
+
+    .btn-group {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* next button */
+
+    .btn-next {
+        background: #1ed760;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 700;
+        color: black;
+    }
+
+        .btn-next:hover {
+            background: #18c95c;
+        }
+
+    /* back button */
+
+    .btn-back {
+        background: #ff4d4f;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 700;
+        color: white;
+    }
+
+</style>

@@ -1,0 +1,47 @@
+TAI KHOAN HE THONG - MIKU CINEMA
+========================================
+
+LUU Y QUAN TRONG:
+Mat khau trong co so du lieu duoc luu duoi dang BAM (BCrypt), khong luu dang ro,
+theo dung yeu cau muc 5 cua phieu giao de tai.
+Cac mat khau ghi duoi day la mat khau DUNG DE DANG NHAP,
+khong phai gia tri luu trong co so du lieu.
+
+--- ADMIN ---
+Email:    admin@gmail.com
+Mat khau: admin123
+Vai tro:  ADMIN
+
+--- USER ---
+Email:    a@gmail.com
+Mat khau: 123456
+Vai tro:  USER
+
+Email:    b@gmail.com
+Mat khau: 123456
+Vai tro:  USER
+
+Email:    chinh1@gmail.com
+Mat khau: 123456
+Vai tro:  USER
+
+Email:    vu@gmail.com
+Mat khau: 123456
+Vai tro:  USER
+
+========================================
+DAT LAI MAT KHAU
+
+Quan tri vien co the dat lai mat khau cho tai khoan bat ky tai:
+  Admin -> Nguoi dung -> Chi tiet nguoi dung -> Dat lai mat khau
+
+Mat khau sau khi dat lai: Miku@123
+(Nen nhac nguoi dung doi lai sau khi dang nhap)
+
+========================================
+QUY TAC MAT KHAU MOI
+
+Khi dang ky hoac doi mat khau, he thong yeu cau:
+  - Toi thieu 6 ky tu
+  - Phai co ca chu va so
+  - Phai nhap lai de xac nhan

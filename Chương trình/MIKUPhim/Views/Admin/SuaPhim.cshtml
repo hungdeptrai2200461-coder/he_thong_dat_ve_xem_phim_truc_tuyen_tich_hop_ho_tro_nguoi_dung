@@ -1,0 +1,64 @@
+﻿@model MIKUPhim.Models.PHIM
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa phim</h2>
+
+<form method="post">
+
+    <div class="form-group">
+        <label>Tên phim</label>
+        <input asp-for="TenPhim" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Thể loại</label>
+        <input asp-for="TheLoai" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Đạo diễn</label>
+        <input asp-for="DaoDien" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Diễn viên</label>
+        <input asp-for="DienVien" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Thời lượng</label>
+        <input asp-for="ThoiLuong" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả</label>
+<textarea asp-for="MoTa" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Trailer URL</label>
+        <input asp-for="TrailerUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Trạng thái</label>
+        <select asp-for="TrangThai" class="form-control">
+            <option value="dang_chieu">Đang chiếu</option>
+            <option value="sap_chieu">Sắp chiếu</option>
+        </select>
+    </div>
+
+    <br>
+
+    <button type="submit" class="btn btn-warning">
+        Cập nhật phim
+    </button>
+
+    <a href="/Admin/QuanLyPhim" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>

@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+    <title>Admin Miku Cinema</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f6f9;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #0d1b2a;
+            color: white;
+            position: fixed;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        /* LOGO */
+
+        .sidebar-header {
+            padding: 18px;
+            text-align: center;
+            background: #1b263b;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* MENU */
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+            /* HOVER */
+
+            .sidebar a:hover {
+                background: #415a77;
+                transform: translateX(4px);
+            }
+
+            /* ACTIVE */
+
+            .sidebar a.active {
+                background: #415a77;
+            }
+
+        /* ICON */
+
+        .sidebar i {
+            font-size: 18px;
+        }
+
+        /* DROPDOWN */
+
+        .submenu {
+            display: none;
+            background: #16213e;
+        }
+
+            .submenu a {
+                padding-left: 40px;
+                font-size: 14px;
+            }
+
+        /* CONTENT */
+
+        .content {
+            margin-left: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        /* SCROLLBAR */
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #415a77;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #0d1b2a;
+        }
+
+        .admin-topbar {
+            background: #1b263b;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+            .admin-topbar img {
+                border: 2px solid #39c5bb;
+            }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="sidebar-header">
+
+            🎬 Miku Admin
+
+        </div>
+
+        <!-- DASHBOARD -->
+
+        <a href="/Admin/TongQuan" class="menu-item">
+
+            <i class="bi bi-speedometer2"></i>
+            Tổng quan
+
+        </a>
+
+        <a href="/Admin/DoanhThuPhim" class="menu-item">
+
+            <i class="bi bi-bar-chart"></i>
+            Doanh thu phim
+
+        </a>
+
+        <a href="/Admin/DoanhThuRap" class="menu-item">
+
+            <i class="bi bi-bar-chart-line"></i>
+            Doanh thu rạp
+
+        </a>
+
+        <hr>
+
+        <!-- CINEMA MANAGEMENT -->
+
+        <a href="#" class="menu-toggle">
+
+            <i class="bi bi-film"></i>
+            Quản lý phim
+            <i class="bi bi-chevron-down ms-auto"></i>
+
+        </a>
+
+        <div class="submenu">
+
+            <a href="/Admin/QuanLyPhim">Danh sách phim</a>
+
+        </div>
+
+        <a href="#" class="menu-toggle">
+
+            <i class="bi bi-building"></i>
+            Quản lý rạp
+            <i class="bi bi-chevron-down ms-auto"></i>
+
+        </a>
+
+        <div class="submenu">
+
+            <a href="/Admin/QuanLyRap">Rạp chiếu</a>
+            <a href="/Admin/QuanLyPhong">Phòng chiếu</a>
+            <a href="/Admin/QuanLyLichChieu">Lịch chiếu</a>
+            <a href="/Admin/QuanLySuatChieu">Suất chiếu</a>
+
+        </div>
+
+        <hr>
+
+        <!-- BOOKING -->
+
+        <a href="#" class="menu-toggle">
+
+            <i class="bi bi-ticket-perforated"></i>
+            Đặt vé
+            <i class="bi bi-chevron-down ms-auto"></i>
+
+        </a>
+
+        <div class="submenu">
+
+            <a href="/Admin/QuanLyDonHang">Đơn hàng</a>
+            <a href="/Admin/QuanLyVe">Vé</a>
+
+        </div>
+
+        <hr>
+
+        <!-- CONTENT -->
+
+        <a href="#" class="menu-toggle">
+
+            <i class="bi bi-gift"></i>
+            Khuyến mãi
+            <i class="bi bi-chevron-down ms-auto"></i>
+
+        </a>
+
+        <div class="submenu">
+
+            <a href="/Admin/QuanLyKhuyenMai">Danh sách khuyến mãi</a>
+
+        </div>
+
+        <a href="/Admin/QuanLyCombo" class="menu-item">
+
+            <i class="bi bi-cup-straw"></i>
+            Combo bắp nước
+
+        </a>
+
+        <hr>
+
+        <!-- USER -->
+
+        <a href="/Admin/QuanLyNguoiDung" class="menu-item">
+
+            <i class="bi bi-people"></i>
+            Người dùng
+
+        </a>
+
+        <!-- HỖ TRỢ NGƯỜI DÙNG -->
+
+        <a href="#" class="menu-toggle">
+
+            <span>
+                <i class="bi bi-headset"></i>
+                Hỗ trợ khách hàng
+            </span>
+
+            <i class="bi bi-chevron-down"></i>
+
+        </a>
+
+        <div class="submenu">
+
+            <a href="/Admin/QuanLyCauHoi">Câu hỏi thường gặp</a>
+            <a href="/Admin/QuanLyYeuCauHoTro">Yêu cầu hỗ trợ</a>
+
+        </div>
+
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+        <!-- TOPBAR -->
+
+        <div class="admin-topbar d-flex justify-content-between align-items-center">
+
+            <div>
+                <h5 class="m-0">Admin Dashboard</h5>
+            </div>
+
+            <div class="dropdown">
+
+                <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                   href="#"
+                   data-bs-toggle="dropdown">
+
+                    <img src="/avatars/@Context.Session.GetString("Avatar")"
+                         width="35"
+                         height="35"
+                         style="border-radius:50%;margin-right:8px">
+
+                    @Context.Session.GetString("HoTen")
+
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+                        <a class="dropdown-item"
+                           href="/Admin/ThongTinAdmin">
+
+                            Thông tin cá nhân
+
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <li>
+                        <a class="dropdown-item text-danger"
+                           href="/Account/Logout">
+
+                            Đăng xuất
+
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        @RenderBody()
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Thư viện kiểm tra dữ liệu nhập phía trình duyệt -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+
+        /* MENU COLLAPSE */
+
+        document.querySelectorAll(".menu-toggle").forEach(menu => {
+
+            menu.addEventListener("click", function (e) {
+
+                e.preventDefault()
+
+                let submenu = this.nextElementSibling
+
+                if (submenu.style.display === "block")
+
+                    submenu.style.display = "none"
+
+                else
+
+                    submenu.style.display = "block"
+
+            })
+
+        })
+
+        /* HIGHLIGHT ACTIVE */
+
+        let links = document.querySelectorAll(".sidebar a")
+
+        links.forEach(link => {
+
+            if (link.href === window.location.href) {
+
+                link.classList.add("active")
+
+            }
+
+        })
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

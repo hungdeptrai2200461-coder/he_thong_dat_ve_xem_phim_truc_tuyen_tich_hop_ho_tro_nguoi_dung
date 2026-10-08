@@ -1,0 +1,56 @@
+﻿@model MIKUPhim.Models.RAP
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa rạp</h2>
+
+<form asp-action="SuaRap" method="post">
+
+    <input type="hidden" asp-for="MaRap" />
+
+    <div class="form-group">
+
+        <label>Tên rạp</label>
+
+        <input asp-for="TenRap" class="form-control" />
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Tỉnh / Thành</label>
+
+        <select asp-for="MaTinh" class="form-control">
+
+            @foreach (var t in ViewBag.TinhThanh)
+            {
+                <option value="@t.MaTinh">@t.TenTinh</option>
+            }
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Địa chỉ</label>
+
+        <input asp-for="DiaChi" class="form-control" />
+
+    </div>
+
+    <br>
+
+    <button type="submit" class="btn btn-warning">
+        Cập nhật
+    </button>
+
+    <a href="/Admin/QuanLyRap" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>

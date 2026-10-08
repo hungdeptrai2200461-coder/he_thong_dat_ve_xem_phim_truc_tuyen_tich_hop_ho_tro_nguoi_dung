@@ -1,0 +1,42 @@
+@model MIKUPhim.Models.ChatBot
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Sửa câu hỏi thường gặp</h2>
+
+<div class="card">
+    <div class="card-body">
+
+        <form asp-action="SuaCauHoi" method="post">
+
+            <input type="hidden" asp-for="MaHoiDap" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Câu hỏi / từ khóa <span class="text-danger">*</span></label>
+                <input asp-for="CauHoi" class="form-control" />
+                <span asp-validation-for="CauHoi" class="text-danger"></span>
+                <div class="form-text">
+                    Khách hàng gõ từ khóa này trên trang Hỗ trợ để tìm ra câu trả lời.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Câu trả lời <span class="text-danger">*</span></label>
+                <textarea asp-for="TraLoi" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="TraLoi" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-warning">Cập nhật</button>
+            <a href="/Admin/QuanLyCauHoi" class="btn btn-secondary">Quay lại</a>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

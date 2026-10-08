@@ -1,0 +1,42 @@
+﻿@model List<MIKUPhim.Models.VE>
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">📜 Lịch sử vé</h2>
+
+    <h4 class="text-success text-center mb-5">
+        Tổng chi tiêu: @String.Format("{0:N0}", ViewBag.TongChiTieu ?? 0) VNĐ
+    </h4>
+
+    <div class="row">
+
+        @foreach (var ve in Model)
+        {
+
+            <div class="col-md-4 mb-4">
+
+                <div class="ticket-history">
+
+                    <img src="~/images/@(ve.SUATCHIEU?.PHIM?.Poster)">
+
+                    <h5>@ve.SUATCHIEU?.PHIM?.TenPhim</h5>
+
+                    <p>📅 @ve.SUATCHIEU?.NgayChieu.ToString("dd/MM/yyyy")</p>
+
+                    <p>🕒 @ve.SUATCHIEU?.GioBatDau.ToString(@"hh\:mm")</p>
+
+                    <p>🎟 Ghế: @ve.GHE?.MaSoGhe</p>
+
+                    <p class="text-success">
+                        💰 @ve.SUATCHIEU.GiaVe.ToString("N0") VNĐ
+                    </p>
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>
